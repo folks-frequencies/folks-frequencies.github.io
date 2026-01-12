@@ -4,17 +4,20 @@
   <meta charset="UTF-8">
   <title>folks + frequencies</title>
 
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
-      background: black;
-      color: white;
-      font-family: "times new roman", serif;
+      background: hsl(287, 100%, 10.7%);
+      color: #f5ffe7;
+      font-family: 'Roboto Mono', monospace;
       letter-spacing: 1.5px;
       overflow-x: hidden;
     }
 
-    /* grain / texture */
+    /* Grainy / concrete texture overlay */
     body::after {
       content: "";
       position: fixed;
@@ -22,8 +25,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: url("https://grainy-gradients.vercel.app/noise.svg");
-      opacity: 0.08;
+      background: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+      opacity: 0.07;
       pointer-events: none;
       z-index: 10;
     }
@@ -42,32 +45,24 @@
       }
     }
 
-    /* intro video */
-    .intro-video {
-      width: 100%;
-      height: 100vh;
-      object-fit: cover;
-      opacity: 0.4;
-    }
-
+    /* Hero / title */
     .hero h1 {
+      font-family: 'Courier Prime', monospace;
       font-size: 4.5rem;
       text-transform: lowercase;
-      margin-bottom: 40px;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
     }
 
-    .statement p {
-      font-size: 1.6rem;
-      margin: 10px 0;
-      opacity: 0.8;
-    }
-
-    .location {
-      font-style: italic;
+    .hero .subtitle {
+      font-size: 1.5rem;
       opacity: 0.6;
+      letter-spacing: 2px;
     }
 
+    /* Episodes section */
     .episodes h2 {
+      font-family: 'Courier Prime', monospace;
       font-size: 3rem;
       letter-spacing: 4px;
       text-transform: lowercase;
@@ -79,6 +74,7 @@
     }
 
     .episode h3 {
+      font-family: 'Courier Prime', monospace;
       font-size: 1.2rem;
       opacity: 0.6;
       letter-spacing: 3px;
@@ -87,23 +83,18 @@
 
     .episode p {
       opacity: 0.4;
-    }
-
-    iframe {
-      width: 100%;
-      height: 420px;
-      border: none;
-      filter: grayscale(100%) contrast(120%) brightness(90%);
+      font-style: italic;
+      font-family: 'Roboto Mono', monospace;
     }
 
     .about p {
       max-width: 600px;
       line-height: 1.8;
-      opacity: 0.8;
+      opacity: 0.7;
     }
 
     .contact a {
-      color: white;
+      color: #f5ffe7;
       text-decoration: none;
       margin-right: 25px;
       opacity: 0.6;
@@ -114,43 +105,29 @@
       opacity: 1;
     }
 
-    /* mobile optimization */
+    /* Mobile optimization */
     @media (max-width: 768px) {
       .hero h1 {
         font-size: 2.8rem;
       }
 
-      .statement p {
-        font-size: 1.2rem;
+      .hero .subtitle {
+        font-size: 1rem;
       }
 
       section {
         padding: 70px 8%;
       }
-
-      iframe {
-        height: 260px;
-      }
     }
+
   </style>
 </head>
 
 <body>
 
-  <!-- looping intro video -->
-  <video autoplay muted loop playsinline class="intro-video">
-    <source src="your-video.mp4" type="video/mp4">
-  </video>
-
   <section class="hero">
     <h1>folks + frequencies</h1>
-
-    <div class="statement">
-      <p>many folks</p>
-      <p>many frequencies</p>
-      <p>in this world !</p>
-      <p class="location">- based in philly -</p>
-    </div>
+    <p class="subtitle">- based in philly -</p>
   </section>
 
   <section class="episodes">
@@ -166,17 +143,21 @@
       <p>coming soon</p>
     </div>
 
+    <div class="episode">
+      <h3>ep 3</h3>
+      <p>coming soon</p>
+    </div>
   </section>
 
   <section class="about">
     <p>
-      folks + frequencies is a web series capturing both fictitious, real, & raw moments in philadelphia.
+      folks + frequencies is a web series capturing fictitious, raw & real moments in philadelphia
     </p>
   </section>
 
   <section class="contact">
-    <a href="https://tiktok.com/@yourhandle">tiktok</a>
-    <a href="https://instagram.com/yourhandle">instagram</a>
+    <a href="https://www.instagram.com/folksfrequencies</a>
+    <a href="https://www.tiktok.com/@folksfrequencies?_r=1&_t=ZP-931Ks2cX8co/a>
   </section>
 
 </body>
