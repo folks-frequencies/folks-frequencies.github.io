@@ -8,9 +8,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
   <style>
-    /* =======================
-       BASIC PAGE STYLING
-    ======================== */
+    /* ----------------------
+       BODY + BACKGROUND
+    ----------------------- */
     body {
       margin: 0;
       font-family: 'Roboto Mono', monospace;
@@ -55,14 +55,14 @@
       width:100%; height:100%;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(0,0,0,0.03),
-        rgba(0,0,0,0.03) 2px,
+        rgba(0,0,0,0.08),
+        rgba(0,0,0,0.08) 2px,
         transparent 2px,
         transparent 4px
       );
       pointer-events: none;
       z-index: 20;
-      animation: scanlineShift 5s linear infinite;
+      animation: scanlineShift 5s linear infinite, scanlineFlicker 1.5s infinite;
     }
 
     @keyframes scanlineShift {
@@ -70,6 +70,31 @@
       100% {background-position: 0 4px;}
     }
 
+    @keyframes scanlineFlicker {
+      0%,20%,50%,70%,100% {opacity:0.08;}
+      10%,30%,60%,80% {opacity:0.15;}
+    }
+
+    /* ----------------------
+       FLOATING PARTICLES
+    ----------------------- */
+    .particle {
+      position: fixed;
+      width: 2px; height: 2px;
+      background: rgba(245,255,231,0.2);
+      pointer-events: none;
+      animation: drift linear infinite;
+      z-index: 15;
+    }
+
+    @keyframes drift {
+      0% {transform: translate(0,0);}
+      100% {transform: translate(var(--x), var(--y));}
+    }
+
+    /* ----------------------
+       GENERAL SECTION
+    ----------------------- */
     section {
       padding: 100px 10%;
       opacity: 0;
@@ -81,9 +106,9 @@
       to {opacity:1; transform: translateY(0);}
     }
 
-    /* =======================
+    /* ----------------------
        HERO / TITLE
-    ======================== */
+    ----------------------- */
     .hero h1 {
       font-family: 'Courier Prime', monospace;
       font-size: 4.5rem;
@@ -91,40 +116,62 @@
       margin-bottom: 20px;
       letter-spacing: 2px;
       display: inline-block;
-      animation: flicker 3s infinite;
+      animation: flicker 3s infinite, glitch 2s infinite;
+      position: relative;
     }
 
-    /* Flicker effect */
     @keyframes flicker {
       0%,19%,21%,23%,25%,54%,56%,100% {opacity:1;}
       20%,22%,24%,55% {opacity:0.4;}
     }
 
-    /* Subtitle scrolling (repeating) */
-    .subtitle-container {
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      margin-top: 10px;
+    @keyframes glitch {
+      0%,100% {transform: translate(0,0);}
+      20% {transform: translate(-1px,0);}
+      40% {transform: translate(1px,0);}
+      60% {transform: translate(-1px,0);}
+      80% {transform: translate(1px,0);}
     }
 
+    /* Neon glitch + sign */
+    .glitch-plus {
+      color: #39ff14;
+      animation: plusFlicker 0.8s infinite, plusGlitch 1.2s infinite;
+      font-weight: bold;
+    }
+
+    @keyframes plusFlicker {
+      0%,20%,50%,70%,100% {opacity:1;}
+      10%,30%,60%,80% {opacity:0.3;}
+    }
+
+    @keyframes plusGlitch {
+      0% {text-shadow: 0 0 2px #39ff14, 0 0 5px #0f0;}
+      20% {text-shadow: -1px 0 2px #39ff14, 1px 0 3px #0f0;}
+      40% {text-shadow: 1px 0 2px #39ff14, -1px 0 3px #0f0;}
+      60% {text-shadow: -1px 0 2px #39ff14, 1px 0 5px #0f0;}
+      80% {text-shadow: 1px 0 2px #39ff14, -1px 0 4px #0f0;}
+      100% {text-shadow: 0 0 2px #39ff14, 0 0 5px #0f0;}
+    }
+
+    /* Scrolling subtitle / based in philly */
+    .subtitle-container { width:100%; overflow:hidden; white-space:nowrap; margin-top:10px; }
     .subtitle {
-      display: inline-block;
-      padding-left: 100%;
+      display:inline-block;
+      padding-left:100%;
       animation: scrollSubtitle 20s linear infinite;
-      font-size: 1.2rem;
-      opacity: 0.6;
-      letter-spacing: 2px;
+      font-size:1.2rem;
+      opacity:0.6;
+      letter-spacing:2px;
     }
-
     @keyframes scrollSubtitle {
       0% {transform: translateX(0%);}
       100% {transform: translateX(-100%);}
     }
 
-    /* =======================
+    /* ----------------------
        EPISODES
-    ======================== */
+    ----------------------- */
     .episodes h2 {
       font-family: 'Courier Prime', monospace;
       font-size: 3rem;
@@ -133,22 +180,17 @@
       margin-bottom: 60px;
       display: inline-block;
       animation: typewriter 4s steps(15) 1 forwards, flicker 4s infinite alternate;
-      border-right: 2px solid #f5ffe7; /* blinking cursor effect */
+      border-right: 2px solid #f5ffe7;
       white-space: nowrap;
       overflow: hidden;
     }
-
-    @keyframes typewriter {
-      from {width: 0;}
-      to {width: 12ch;} /* adjust based on text length */
-    }
+    @keyframes typewriter { from{width:0;} to{width:12ch;} }
 
     .episode {
       margin-bottom: 80px;
       position: relative;
     }
 
-    /* Glitch effect on episode titles */
     .episode h3 {
       font-family: 'Courier Prime', monospace;
       font-size: 1.2rem;
@@ -157,84 +199,101 @@
       margin-bottom: 10px;
       display: inline-block;
       position: relative;
+      animation: episodeGlitch 2s infinite;
+    }
+
+    @keyframes episodeGlitch {
+      0%,100% {transform: translateX(0);}
+      25% {transform: translateX(1px);}
+      50% {transform: translateX(-1px);}
+      75% {transform: translateX(1px);}
     }
 
     .episode h3::before,
     .episode h3::after {
       content: attr(data-text);
       position: absolute;
-      left: 0; top: 0;
-      opacity: 0.2;
-      color: #f5ffe7;
-      clip: rect(0,0,0,0);
+      left:0; top:0;
+      opacity:0.2;
+      color:#f5ffe7;
+      clip:rect(0,0,0,0);
     }
 
-    .episode h3:hover::before {clip:auto; left: 2px; top: 0;}
-    .episode h3:hover::after {clip:auto; left: -2px; top: 0;}
+    .episode h3:hover::before {clip:auto; left:2px; top:0;}
+    .episode h3:hover::after {clip:auto; left:-2px; top:0;}
+    .episode p {opacity:0.4; font-style:italic; font-family:'Roboto Mono', monospace;}
 
-    .episode p {
-      opacity: 0.4;
-      font-style: italic;
-      font-family: 'Roboto Mono', monospace;
-    }
-
-    /* =======================
-       ABOUT (scrolling description)
-    ======================== */
-    .about-container {
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-      margin-top: 30px;
-    }
-
+    /* ----------------------
+       SCROLLING ABOUT TEXT
+    ----------------------- */
+    .about-container {width:100%; overflow:hidden; white-space:nowrap; margin-top:30px;}
     .about p {
-      display: inline-block;
-      padding-left: 100%;
+      display:inline-block;
+      padding-left:100%;
       animation: scrollAbout 60s linear infinite;
-      max-width: none;
-      opacity: 0.7;
+      max-width:none;
+      opacity:0.7;
     }
+    @keyframes scrollAbout {0%{transform:translateX(0%);}100%{transform:translateX(-100%);}}
 
-    @keyframes scrollAbout {
-      0% {transform: translateX(0%);}
-      100% {transform: translateX(-100%);}
-    }
-
-    /* =======================
+    /* ----------------------
        CONTACT LINKS
-    ======================== */
+    ----------------------- */
     .contact a {
-      color: #f5ffe7;
-      text-decoration: none;
-      margin-right: 25px;
-      opacity: 0.6;
-      letter-spacing: 2px;
-      transition: 0.3s;
+      color:#f5ffe7;
+      text-decoration:none;
+      margin-right:25px;
+      opacity:0.6;
+      letter-spacing:2px;
+      transition:0.3s;
     }
+    .contact a:hover {opacity:1; text-shadow:0 0 8px #f5ffe7;}
 
-    .contact a:hover {
-      opacity: 1;
-      text-shadow: 0 0 8px #f5ffe7;
+    /* ----------------------
+       MOBILE
+    ----------------------- */
+    @media(max-width:768px){
+      .hero h1{font-size:2.8rem;}
+      .subtitle{font-size:1rem;}
+      section{padding:70px 8%;}
     }
-
-    /* =======================
-       MOBILE OPTIMIZATION
-    ======================== */
-    @media (max-width: 768px) {
-      .hero h1 { font-size: 2.8rem; }
-      .subtitle { font-size: 1rem; }
-      section { padding: 70px 8%; }
-    }
-
   </style>
 </head>
-
 <body>
+
+  <!-- ANALOG TAPE HISS / WHITE NOISE -->
+  <audio src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" autoplay loop volume="0.05"></audio>
+
+  <!-- FLOATING PARTICLES -->
+  <script>
+    const numParticles = 80;
+    for(let i=0;i<numParticles;i++){
+      const p=document.createElement('div');
+      p.className='particle';
+      p.style.left=Math.random()*window.innerWidth+'px';
+      p.style.top=Math.random()*window.innerHeight+'px';
+      p.style.setProperty('--x', (Math.random()*50-25)+'px');
+      p.style.setProperty('--y', (Math.random()*50-25)+'px');
+      p.style.animationDuration=(5+Math.random()*10)+'s';
+      document.body.appendChild(p);
+    }
+
+    /* ----------------------
+       INTERACTIVE GLITCH + SCREEN SHAKE
+    ----------------------- */
+    function triggerGlitch() {
+      document.body.style.transform = `translate(${Math.random()*4-2}px,${Math.random()*4-2}px)`;
+      setTimeout(()=>{document.body.style.transform='translate(0,0)';},100);
+    }
+    document.body.addEventListener('click', triggerGlitch);
+
+    // Random glitch every 3-8 seconds
+    setInterval(triggerGlitch, 3000 + Math.random()*5000);
+  </script>
 
   <!-- HERO -->
   <section class="hero">
-    <h1>folks + frequencies</h1>
+    <h1>folks <span class="glitch-plus">+</span> frequencies</h1>
     <div class="subtitle-container">
       <p class="subtitle">- based in philly - &nbsp; - based in philly - &nbsp; - based in philly -</p>
     </div>
@@ -263,7 +322,7 @@
   <!-- ABOUT / SCROLLING DESCRIPTION -->
   <section class="about">
     <div class="about-container">
-      <p>folks + frequencies is a web series capturing fictitious, raw & real moments in philadelphia — fictitious, raw & real moments in philadelphia — </p>
+      <p>folks + frequencies is a web series capturing fictitious, raw & real moments in philadelphia — fictitious, raw & real moments in philadelphia —</p>
     </div>
   </section>
 
