@@ -8,26 +8,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
   <style>
+    /* =======================
+       BASIC PAGE STYLING
+    ======================== */
     body {
       margin: 0;
-      background: hsl(287, 100%, 10.7%);
-      color: #f5ffe7;
       font-family: 'Roboto Mono', monospace;
-      letter-spacing: 1.5px;
       overflow-x: hidden;
+      color: #f5ffe7;
+      background: linear-gradient(120deg, #1b001f, #000000, #0a1b00);
+      background-size: 600% 600%;
+      animation: gradientShift 60s ease infinite alternate;
       position: relative;
-
-      /* Optional: background color animation */
-      animation: bgShift 60s linear infinite alternate;
     }
 
-    @keyframes bgShift {
-      0% {background-color: hsl(287, 100%, 10.7%);} /* dark purple */
-      50% {background-color: #000000;} /* black */
-      100% {background-color: hsl(120, 100%, 7%);} /* extremely dark forest green */
+    @keyframes gradientShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
 
-    /* Grain / dust overlay */
+    /* Grain overlay */
     body::after {
       content: "";
       position: fixed;
@@ -80,52 +81,66 @@
       to {opacity:1; transform: translateY(0);}
     }
 
-    /* Hero / title */
+    /* =======================
+       HERO / TITLE
+    ======================== */
     .hero h1 {
       font-family: 'Courier Prime', monospace;
       font-size: 4.5rem;
       text-transform: lowercase;
       margin-bottom: 20px;
       letter-spacing: 2px;
-      position: relative;
       display: inline-block;
       animation: flicker 3s infinite;
     }
 
-    /* Typewriter flicker */
+    /* Flicker effect */
     @keyframes flicker {
       0%,19%,21%,23%,25%,54%,56%,100% {opacity:1;}
       20%,22%,24%,55% {opacity:0.4;}
     }
 
-    .hero .subtitle {
-      font-size: 1.5rem;
+    /* Subtitle scrolling (repeating) */
+    .subtitle-container {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      margin-top: 10px;
+    }
+
+    .subtitle {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scrollSubtitle 20s linear infinite;
+      font-size: 1.2rem;
       opacity: 0.6;
       letter-spacing: 2px;
     }
 
-    /* Terminal-style blinking cursor after subtitle */
-    .hero .subtitle::after {
-      content: "|";
-      display: inline-block;
-      margin-left: 5px;
-      opacity: 0.7;
-      animation: blinkCursor 1s steps(2, start) infinite;
+    @keyframes scrollSubtitle {
+      0% {transform: translateX(0%);}
+      100% {transform: translateX(-100%);}
     }
 
-    @keyframes blinkCursor {
-      0%,50% {opacity: 0;}
-      51%,100% {opacity: 1;}
-    }
-
-    /* Episodes section */
+    /* =======================
+       EPISODES
+    ======================== */
     .episodes h2 {
       font-family: 'Courier Prime', monospace;
       font-size: 3rem;
       letter-spacing: 4px;
       text-transform: lowercase;
       margin-bottom: 60px;
-      animation: flicker 4s infinite alternate;
+      display: inline-block;
+      animation: typewriter 4s steps(15) 1 forwards, flicker 4s infinite alternate;
+      border-right: 2px solid #f5ffe7; /* blinking cursor effect */
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    @keyframes typewriter {
+      from {width: 0;}
+      to {width: 12ch;} /* adjust based on text length */
     }
 
     .episode {
@@ -133,7 +148,7 @@
       position: relative;
     }
 
-    /* Subtle glitch effect on ep titles */
+    /* Glitch effect on episode titles */
     .episode h3 {
       font-family: 'Courier Prime', monospace;
       font-size: 1.2rem;
@@ -163,12 +178,32 @@
       font-family: 'Roboto Mono', monospace;
     }
 
+    /* =======================
+       ABOUT (scrolling description)
+    ======================== */
+    .about-container {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      margin-top: 30px;
+    }
+
     .about p {
-      max-width: 600px;
-      line-height: 1.8;
+      display: inline-block;
+      padding-left: 100%;
+      animation: scrollAbout 60s linear infinite;
+      max-width: none;
       opacity: 0.7;
     }
 
+    @keyframes scrollAbout {
+      0% {transform: translateX(0%);}
+      100% {transform: translateX(-100%);}
+    }
+
+    /* =======================
+       CONTACT LINKS
+    ======================== */
     .contact a {
       color: #f5ffe7;
       text-decoration: none;
@@ -183,22 +218,29 @@
       text-shadow: 0 0 8px #f5ffe7;
     }
 
-    /* Mobile optimization */
+    /* =======================
+       MOBILE OPTIMIZATION
+    ======================== */
     @media (max-width: 768px) {
       .hero h1 { font-size: 2.8rem; }
-      .hero .subtitle { font-size: 1rem; }
+      .subtitle { font-size: 1rem; }
       section { padding: 70px 8%; }
     }
+
   </style>
 </head>
 
 <body>
 
+  <!-- HERO -->
   <section class="hero">
     <h1>folks + frequencies</h1>
-    <p class="subtitle">- based in philly -</p>
+    <div class="subtitle-container">
+      <p class="subtitle">- based in philly - &nbsp; - based in philly - &nbsp; - based in philly -</p>
+    </div>
   </section>
 
+  <!-- EPISODES -->
   <section class="episodes">
     <h2>volume 1</h2>
 
@@ -218,12 +260,14 @@
     </div>
   </section>
 
+  <!-- ABOUT / SCROLLING DESCRIPTION -->
   <section class="about">
-    <p>
-      folks + frequencies is a web series capturing fictitious, raw & real moments in philadelphia
-    </p>
+    <div class="about-container">
+      <p>folks + frequencies is a web series capturing fictitious, raw & real moments in philadelphia — fictitious, raw & real moments in philadelphia — </p>
+    </div>
   </section>
 
+  <!-- CONTACT -->
   <section class="contact">
     <a href="https://www.instagram.com/folksfrequencies">instagram</a>
     <a href="https://www.tiktok.com/@folksfrequencies?_r=1&_t=ZP-931Ks2cX8co/a">tiktok</a>
