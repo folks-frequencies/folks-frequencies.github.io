@@ -1,30 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>folks + frequencies</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
 <style>
 html, body {
   margin: 0;
-  padding: 0;
+  height: 100%;
   font-family: 'Roboto Mono', monospace;
+  background: linear-gradient(270deg, #1a0026, #000000, #0b1a0b);
+  background-size: 600% 600%;
+  animation: gradientShift 20s ease infinite;
   color: #f5ffe7;
   overflow-x: hidden;
-  background: #0b0010;
-}
-
-/* Animated gradient */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(120deg, #0b0010, #001a0f, #120014);
-  background-size: 400% 400%;
-  animation: gradientShift 20s ease infinite;
-  z-index: -3;
 }
 
 @keyframes gradientShift {
@@ -33,327 +23,280 @@ body::before {
   100% { background-position: 0% 50%; }
 }
 
-/* STRONG VHS Scanlines */
+/* VHS Scanlines */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,0.08) 0px,
-    rgba(0,0,0,0.35) 2px,
-    rgba(0,0,0,0.35) 4px
+    rgba(255,255,255,0.03) 0px,
+    rgba(0,0,0,0.05) 1px,
+    rgba(0,0,0,0.05) 2px
   );
-  animation: vhsMove 0.25s infinite;
-  mix-blend-mode: overlay;
   pointer-events: none;
-  z-index: 10;
+  z-index: 5;
 }
 
-@keyframes vhsMove {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(2px); }
-}
-
-/* Grain */
-.grain {
-  position: fixed;
-  inset: 0;
-  background: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
-  opacity: 0.08;
-  pointer-events: none;
-  z-index: 9;
-}
-
-/* Hero */
+/* Title */
 .hero {
+  padding: 100px 10%;
   text-align: center;
-  padding: 80px 20px 30px;
-  animation: flicker 5s infinite;
 }
 
 .hero h1 {
   font-family: 'Courier Prime', monospace;
   font-size: 4rem;
+  letter-spacing: 3px;
   text-transform: lowercase;
-  animation: tilt 6s infinite alternate;
+  animation: flicker 3s infinite;
 }
 
-.plus {
+.hero span {
   color: #39ff14;
   text-shadow: 0 0 8px #39ff14;
-  animation: glitch 0.12s infinite alternate;
+  animation: plusGlitch 1.5s infinite;
 }
 
-.hero .subtitle {
+.subtitle {
   opacity: 0.6;
-  font-size: 1.4rem;
-}
-
-@keyframes tilt {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(0.8deg); }
-}
-
-@keyframes glitch {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
+  letter-spacing: 2px;
 }
 
 @keyframes flicker {
   0%, 100% { opacity: 1; }
-  98% { opacity: 0.85; }
+  40% { opacity: 0.8; }
+  50% { opacity: 0.5; }
+  60% { opacity: 0.9; }
 }
 
-/* Scrolling Text */
-.marquee {
-  white-space: nowrap;
-  overflow: hidden;
-  border-top: 1px solid rgba(255,255,255,0.1);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-
-.marquee span {
-  display: inline-block;
-  padding-left: 100%;
-  animation: scroll 18s linear infinite;
-  opacity: 0.5;
-}
-
-@keyframes scroll {
-  from { transform: translateX(0); }
-  to { transform: translateX(-100%); }
+@keyframes plusGlitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-1px, 1px); }
+  40% { transform: translate(1px, -1px); }
+  60% { transform: translate(-2px, 0); }
+  80% { transform: translate(2px, 0); }
 }
 
 /* Episodes */
 .episodes {
-  padding: 60px 10%;
+  padding: 80px 10%;
+  text-align: center;
+}
+
+.episodes h2 {
+  font-family: 'Courier Prime', monospace;
+  letter-spacing: 4px;
+  margin-bottom: 40px;
 }
 
 .episode {
-  margin-bottom: 30px;
+  margin: 30px 0;
   position: relative;
   cursor: pointer;
 }
 
-.ghost-message {
+.episode::after {
+  content: "patience — episode isn't out yet";
   position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.15);
   opacity: 0;
-  color: #ff4444;
-  transition: opacity 0.4s ease;
-  font-size: 0.9rem;
+  transition: 0.3s;
 }
 
-.episode:hover .ghost-message {
+.episode:hover::after {
   opacity: 1;
 }
 
-/* Chat */
-.chat-box {
-  width: 90%;
-  max-width: 700px;
-  margin: 80px auto;
+/* Chat Box */
+.chat-container {
+  max-width: 600px;
+  margin: 100px auto;
   padding: 20px;
-  background: rgba(0,0,0,0.35);
-  border: 1px solid rgba(57,255,20,0.5);
-  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.2);
   backdrop-filter: blur(4px);
-  animation: chatWobble 3s infinite;
-}
-
-@keyframes chatWobble {
-  0%,100% { transform: translateX(0); }
-  50% { transform: translateX(1px); }
+  position: relative;
 }
 
 .message {
+  margin: 10px 0;
   max-width: 80%;
-  padding: 8px 10px;
-  margin-bottom: 15px;
-  border-radius: 6px;
-  line-height: 1.5;
-  animation: fadeIn 0.5s ease;
   word-wrap: break-word;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-.left {
-  background: rgba(255,255,255,0.05);
-  color: #f5ffe7;
-  margin-right: auto;
-}
-
-.right {
-  background: rgba(57,255,20,0.1);
-  color: #39ff14;
+.you {
   margin-left: auto;
+  text-align: right;
+  color: #a8ff90;
 }
 
-/* Cursor Trail */
-.trail {
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #39ff14;
-  pointer-events: none;
-  opacity: 0.6;
-  animation: fade 0.6s forwards;
-}
-
-@keyframes fade {
-  to { opacity: 0; transform: scale(0.3); }
-}
-
-/* Click Words */
-.ghost-word {
-  position: absolute;
-  font-size: 14px;
+.other {
+  margin-right: auto;
+  text-align: left;
   color: #f5ffe7;
+}
+
+/* Floating click words */
+.float-word {
+  position: fixed;
+  font-size: 0.8rem;
   opacity: 0.8;
+  animation: floatUp 1.5s ease forwards;
   pointer-events: none;
-  animation: floatUp 1.5s forwards;
 }
 
 @keyframes floatUp {
-  to { transform: translateY(-80px); opacity: 0; }
+  0% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-60px); opacity: 0; }
+}
+
+/* Cursor trail */
+.trail {
+  position: fixed;
+  width: 6px;
+  height: 6px;
+  background: rgba(200,255,200,0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  animation: fadeTrail 0.6s linear forwards;
+}
+
+@keyframes fadeTrail {
+  to { opacity: 0; transform: scale(2); }
 }
 
 /* Mobile */
-@media (max-width: 768px) {
-  .hero h1 { font-size: 2.6rem; }
-  .hero .subtitle { font-size: 1rem; }
+@media (max-width: 600px) {
+  .hero h1 { font-size: 2.5rem; }
+  .chat-container { margin: 60px 10px; }
 }
 </style>
 </head>
 
 <body>
 
-<div class="grain"></div>
-
-<section class="hero">
-  <h1>folks <span class="plus">+</span> frequencies</h1>
-  <p class="subtitle">- based in philly -</p>
-</section>
-
-<div class="marquee">
-  <span>folks + frequencies — fictitious, raw & real moments in philadelphia — </span>
+<div class="hero">
+  <h1>folks <span>+</span> frequencies</h1>
+  <div class="subtitle">- based in philly -</div>
 </div>
 
-<section class="episodes">
-  <div class="episode"><div class="ghost-message">patience — episode isn't out yet</div>ep 1</div>
-  <div class="episode"><div class="ghost-message">patience — episode isn't out yet</div>ep 2</div>
-  <div class="episode"><div class="ghost-message">patience — episode isn't out yet</div>ep 3</div>
-</section>
+<div class="episodes">
+  <h2>volume 1</h2>
+  <div class="episode">ep 1</div>
+  <div class="episode">ep 2</div>
+  <div class="episode">ep 3</div>
+</div>
 
-<div class="chat-box" id="chatBox"></div>
+<div class="chat-container" id="chat"></div>
 
 <script>
-const chatBox = document.getElementById("chatBox");
-
 const conversation = [
-  ["you just did", "why'd we end up in this timeline?"],
-  ["you have power to do whatever you want. to fight for the world you want to live in.", "can i change the narrative to my story?"],
-  ["we all forget sometimes...", "sometimes i forget that i have power."],
-  ["optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort.", "do you think nihilism is weaker than optimism?"]
+  ["why'd we end up in this timeline?", "you just did"],
+  ["can i change the narrative to my story?", "you have power to do whatever you want. to fight for the world you want to live in."],
+  ["sometimes i forget that i have power.", "we all forget sometimes..."],
+  ["do you think nihilism is weaker than optimism?", "optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."]
 ];
 
 let msgIndex = 0;
+let charIndex = 0;
+let typing = true;
+let deleting = false;
+let currentText = "";
+let chat = document.getElementById("chat");
 
-function typeMessage(text, side, callback) {
-  const msg = document.createElement("div");
-  msg.className = `message ${side}`;
-  chatBox.appendChild(msg);
+function typeLoop() {
+  const [question, answer] = conversation[msgIndex];
+  const text = typing ? (charIndex < question.length ? question : answer) : currentText;
 
-  let i = 0;
-  const typer = setInterval(() => {
-    msg.textContent += text[i];
-    i++;
-    if (i >= text.length) {
-      clearInterval(typer);
-      if (callback) callback();
-    }
-  }, 40);
-}
-
-function playConversation() {
-  if (msgIndex >= conversation.length) {
-    setTimeout(clearConversation, 2000);
-    return;
-  }
-
-  const [rightMsg, leftMsg] = conversation[msgIndex];
-
-  typeMessage(rightMsg, "right", () => {
-    setTimeout(() => {
-      typeMessage(leftMsg, "left", () => {
-        msgIndex++;
-        setTimeout(playConversation, 1200);
-      });
-    }, 1000);
-  });
-}
-
-function clearConversation() {
-  const messages = Array.from(document.querySelectorAll(".message"));
-  let i = messages.length - 1;
-
-  const eraser = setInterval(() => {
-    if (i < 0) {
-      clearInterval(eraser);
-      chatBox.innerHTML = "";
-      msgIndex = 0;
-      setTimeout(playConversation, 1000);
+  if (typing) {
+    if (charIndex < question.length) {
+      currentText += question[charIndex++];
+    } else {
+      setTimeout(() => {
+        addMessage(currentText, "you");
+        currentText = "";
+        charIndex = 0;
+        typing = false;
+      }, 800); // pause before reply
       return;
     }
-
-    let text = messages[i].textContent;
-    if (text.length > 0) {
-      messages[i].textContent = text.slice(0, -1);
+  } else {
+    if (charIndex < answer.length) {
+      currentText += answer[charIndex++];
     } else {
-      messages[i].remove();
-      i--;
+      setTimeout(() => {
+        addMessage(currentText, "other");
+        currentText = "";
+        charIndex = 0;
+        deleting = true;
+      }, 1200); // pause before delete
+      return;
     }
-  }, 30);
+  }
+
+  setTimeout(typeLoop, 60);
 }
 
-playConversation();
+function addMessage(text, type) {
+  const div = document.createElement("div");
+  div.className = `message ${type}`;
+  div.textContent = text;
+  chat.appendChild(div);
+  chat.scrollTop = chat.scrollHeight;
+}
 
-/* Cursor Trail */
+function deleteMessages() {
+  const messages = document.querySelectorAll(".message");
+  if (messages.length) {
+    messages[messages.length - 1].remove();
+  } else {
+    deleting = false;
+    typing = true;
+    msgIndex = (msgIndex + 1) % conversation.length;
+  }
+  setTimeout(deleteMessages, 150);
+}
+
+setInterval(() => {
+  if (deleting) deleteMessages();
+}, 200);
+
+typeLoop();
+
+/* Cursor trail */
 document.addEventListener("mousemove", e => {
-  const t = document.createElement("div");
-  t.className = "trail";
-  t.style.left = e.pageX + "px";
-  t.style.top = e.pageY + "px";
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 600);
+  const dot = document.createElement("div");
+  dot.className = "trail";
+  dot.style.left = e.clientX + "px";
+  dot.style.top = e.clientY + "px";
+  document.body.appendChild(dot);
+  setTimeout(() => dot.remove(), 600);
 });
 
-/* Click Words */
-const ghostWords = ["hi", "XD", ":)", ":/", "how did u get here?"];
+/* Click words */
+const words = ["hi", "xd", ":)", ":/", "how did u get here?"];
 let lastClick = 0;
 
 document.addEventListener("click", e => {
   const now = Date.now();
-  if (now - lastClick < 500) return;
+  if (now - lastClick < 400) return;
   lastClick = now;
 
-  const word = document.createElement("div");
-  word.className = "ghost-word";
-  word.textContent = ghostWords[Math.floor(Math.random() * ghostWords.length)];
-  word.style.left = e.pageX + "px";
-  word.style.top = e.pageY + "px";
-  document.body.appendChild(word);
+  const w = document.createElement("div");
+  w.className = "float-word";
+  w.textContent = words[Math.floor(Math.random() * words.length)];
+  w.style.left = e.clientX + "px";
+  w.style.top = e.clientY + "px";
+  document.body.appendChild(w);
 
-  setTimeout(() => word.remove(), 1500);
+  document.body.style.transform = "translateX(2px)";
+  setTimeout(() => document.body.style.transform = "", 100);
+
+  setTimeout(() => w.remove(), 1500);
 });
 </script>
 
