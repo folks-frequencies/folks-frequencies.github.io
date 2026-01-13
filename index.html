@@ -3,38 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <title>folks + frequencies</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
   <style>
-    /* ===== Global Styles ===== */
+    /* ---- BASIC LAYOUT ---- */
     html, body {
       margin: 0;
       padding: 0;
+      height: 100%;
       font-family: 'Roboto Mono', monospace;
-      background: hsl(287, 100%, 10.7%);
-      color: #f5ffe7;
-      overflow-x: hidden;
-    }
-
-    body::after {
-      content: "";
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
-      opacity: 0.07;
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    /* ===== Gradient Animated Background ===== */
-    body {
-      background: linear-gradient(270deg, #0a0b0d, #0f1f11, #0a0b0d);
-      background-size: 600% 600%;
+      background: linear-gradient(120deg, hsl(287, 100%, 10%), hsl(150, 100%, 5%));
+      background-size: 400% 400%;
       animation: gradientBG 30s ease infinite;
+      overflow-x: hidden;
+      color: #f5ffe7;
+      position: relative;
     }
 
     @keyframes gradientBG {
@@ -43,56 +28,109 @@
       100% {background-position:0% 50%;}
     }
 
-    /* ===== Hero / Title ===== */
+    /* ---- VHS LINES ---- */
+    .vhs-lines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(255,255,255,0.03),
+        rgba(255,255,255,0.03) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      z-index: 50;
+      animation: vhsShift 0.5s infinite linear;
+    }
+
+    @keyframes vhsShift {
+      0% {transform: translateY(0);}
+      50% {transform: translateY(2px);}
+      100% {transform: translateY(0);}
+    }
+
+    /* ---- CURSOR TRAIL ---- */
+    .trail {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: rgba(245,255,231,0.5);
+      border-radius: 50%;
+      pointer-events: none;
+      mix-blend-mode: lighten;
+      z-index: 100;
+    }
+
+    /* ---- HERO TITLE ---- */
     .hero {
       text-align: center;
-      padding: 100px 10%;
+      padding: 80px 20px 20px 20px;
       position: relative;
+      z-index: 10;
     }
 
     .hero h1 {
       font-family: 'Courier Prime', monospace;
       font-size: 4.5rem;
-      text-transform: lowercase;
       letter-spacing: 2px;
-      animation: flickerTilt 3s infinite;
+      text-transform: lowercase;
+      display: inline-block;
+      animation: flicker 2s infinite alternate;
     }
 
     .hero h1 span.plus {
-      color: #00ff00;
-      animation: glitchPlus 0.5s infinite alternate;
+      color: #39ff14;
+      animation: flickerPlus 1s infinite alternate;
+    }
+
+    @keyframes flicker {
+      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {opacity:1; transform:rotate(0deg);}
+      20%, 22%, 24%, 55% {opacity:0.4; transform:rotate(-1deg);}
+    }
+
+    @keyframes flickerPlus {
+      0%,50%,100% {opacity:1;}
+      25%,75% {opacity:0.1;}
     }
 
     .hero .subtitle {
       font-size: 1.5rem;
       opacity: 0.6;
       letter-spacing: 2px;
-      margin-bottom: 20px;
+      display:block;
+      margin-top: 10px;
     }
 
-    /* ===== Scrolling Description ===== */
-    .scrolling-text {
-      overflow: hidden;
+    /* ---- SCROLLING DESCRIPTION ---- */
+    .scrolling-desc {
+      font-size: 1rem;
+      opacity: 0.7;
+      margin-top: 20px;
       white-space: nowrap;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    .scrolling-text p {
-      display: inline-block;
-      padding-left: 100%;
-      animation: scrollText 30s linear infinite;
+      overflow: hidden;
+      width: 90%;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      border-right: 2px solid #f5ffe7;
+      animation: scrollText 15s linear infinite;
     }
 
     @keyframes scrollText {
-      0% {transform: translateX(0);}
+      0% {transform: translateX(100%);}
       100% {transform: translateX(-100%);}
     }
 
-    /* ===== Episodes ===== */
+    /* ---- EPISODES ---- */
     .episodes {
-      padding: 50px 10%;
+      padding: 60px 10%;
       text-align: center;
+      position: relative;
+      z-index: 10;
     }
 
     .episodes h2 {
@@ -101,7 +139,6 @@
       letter-spacing: 4px;
       text-transform: lowercase;
       margin-bottom: 40px;
-      animation: flickerTilt 2s infinite;
     }
 
     .episode {
@@ -111,264 +148,206 @@
       cursor: pointer;
     }
 
-    .episode h3 {
-      font-size: 1.5rem;
-      letter-spacing: 3px;
-      margin: 0;
-    }
-
-    /* ===== Patience Message ===== */
-    .patience-msg {
+    .episode span.patience {
+      display:none;
       position: absolute;
-      top: 0; left: 105%;
-      color: red;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #ff6f6f;
       font-size: 0.9rem;
-      opacity: 0;
-      transition: opacity 0.3s;
       white-space: nowrap;
     }
 
-    .episode:hover .patience-msg {
-      opacity: 1;
+    .episode:hover span.patience {
+      display:block;
+      color: #ff8a8a;
     }
 
-    @media (max-width:768px){
-      .patience-msg {
-        position: static;
-        margin-top: 5px;
-        display: block;
-      }
-    }
-
-    /* ===== Chat Box ===== */
+    /* ---- CHAT ---- */
     .chat-container {
-      padding: 50px 10%;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .chat-message {
-      max-width: 70%;
-      padding: 10px 15px;
-      border-radius: 10px;
+      width: 90%;
+      max-width: 700px;
+      margin: 50px auto;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(245,255,231,0.2);
       font-family: 'Roboto Mono', monospace;
       font-size: 1rem;
-      position: relative;
-      word-break: break-word;
-    }
-
-    .user1 {
-      align-self: flex-start;
-      background: rgba(0,255,0,0.1);
-      color: #00ff00;
-    }
-
-    .user2 {
-      align-self: flex-end;
-      background: rgba(255,255,255,0.1);
       color: #f5ffe7;
+      position: relative;
+      overflow: hidden;
     }
 
-    /* ===== VHS Lines ===== */
-    .vhs-lines {
-      position: fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background: repeating-linear-gradient(
-        rgba(255,255,255,0.02) 0 1px,
-        transparent 1px 2px
-      );
-      pointer-events: none;
-      z-index: 20;
-      mix-blend-mode: lighten;
+    .message {
+      padding: 10px 15px;
+      margin: 8px 0;
+      max-width: 70%;
+      border-radius: 5px;
+      display: inline-block;
+      word-wrap: break-word;
+      position: relative;
+      opacity: 0;
     }
 
-    /* ===== Cursor Trail ===== */
-    .trail {
-      position: absolute;
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: #f5ffe7;
-      pointer-events: none;
-      z-index: 100;
-    }
+    .message.user1 { background: rgba(57,255,20,0.1); color:#39ff14; float:right; clear:both;}
+    .message.user2 { background: rgba(245,255,231,0.1); color:#f5ffe7; float:left; clear:both;}
 
-    /* ===== Flicker & Glitch Animations ===== */
-    @keyframes flickerTilt {
-      0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-        transform: rotate(0deg);
-        opacity: 1;
-      }
-      20%, 24%, 55% {
-        transform: rotate(-1deg);
-        opacity: 0.8;
-      }
-    }
-
-    @keyframes glitchPlus {
-      0% {opacity:1; transform:translate(0);}
-      50% {opacity:0.3; transform:translate(2px,-2px);}
-      100% {opacity:1; transform:translate(-1px,1px);}
-    }
-
-    /* ===== Social Links ===== */
+    /* ---- SOCIAL LINKS ---- */
     .social {
       position: fixed;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 5px;
+      width: 100%;
+      text-align: center;
       font-size: 0.7rem;
-      letter-spacing: 1px;
-      opacity: 0.6;
-      display: flex;
-      gap: 20px;
-      z-index: 100;
+      opacity: 0.7;
+      z-index: 10;
     }
 
     .social a {
+      margin: 0 8px;
       color: #f5ffe7;
       text-decoration: none;
     }
 
-    /* ===== Mobile Optimization ===== */
+    .social a:hover {opacity: 1;}
+
+    /* ---- MOBILE OPTIMIZATION ---- */
     @media (max-width:768px){
-      .hero h1 {font-size: 3rem;}
-      .hero .subtitle {font-size: 1rem;}
-      .episodes h2 {font-size: 2rem;}
+      .hero h1 { font-size: 2.8rem; }
+      .hero .subtitle { font-size: 1rem; }
+      .episodes { padding: 40px 5%; }
+      .scrolling-desc { font-size: 0.9rem; }
+      .chat-container { font-size: 0.85rem; padding: 15px; }
+      .episode span.patience { font-size: 0.8rem; top: 100%; }
     }
+
   </style>
 </head>
+
 <body>
 
-  <!-- VHS lines overlay -->
+  <!-- VHS Lines -->
   <div class="vhs-lines"></div>
 
-  <!-- Hero / Title -->
+  <!-- TRAIL -->
+  <div id="trail-container"></div>
+
+  <!-- HERO -->
   <section class="hero">
     <h1>folks <span class="plus">+</span> frequencies</h1>
     <p class="subtitle">- based in philly -</p>
-    <div class="scrolling-text">
-      <p>this is a web series capturing fictitious, raw & real moments in philadelphia...</p>
-    </div>
+    <div class="scrolling-desc">this is a web series capturing fictitious, raw & real moments in philadelphia</div>
   </section>
 
-  <!-- Episodes -->
+  <!-- EPISODES -->
   <section class="episodes">
     <h2>volume 1</h2>
 
     <div class="episode">
-      <h3>ep 1</h3>
-      <span class="patience-msg">patience-- episode isn't out yet</span>
+      ep 1
+      <span class="patience">patience -- episode isn't out yet</span>
     </div>
 
     <div class="episode">
-      <h3>ep 2</h3>
-      <span class="patience-msg">patience-- episode isn't out yet</span>
+      ep 2
+      <span class="patience">patience -- episode isn't out yet</span>
     </div>
 
     <div class="episode">
-      <h3>ep 3</h3>
-      <span class="patience-msg">patience-- episode isn't out yet</span>
+      ep 3
+      <span class="patience">patience -- episode isn't out yet</span>
     </div>
   </section>
 
-  <!-- Chat -->
-  <section class="chat-container" id="chat"></section>
+  <!-- CHAT -->
+  <section class="chat-container">
+    <div class="message user1">why'd we end up in this timeline?</div>
+    <div class="message user2">you just did</div>
+    <div class="message user1">can i change the narrative to my story?</div>
+    <div class="message user2">you have power to do whatever you want. to fight for the world you want to live in.</div>
+    <div class="message user1">sometimes i forget that i have power.</div>
+    <div class="message user2">we all forget sometimes...</div>
+    <div class="message user1">do you think nihilism is weaker than optimism?</div>
+    <div class="message user2">optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort.</div>
+  </section>
 
-  <!-- Social Links -->
+  <!-- SOCIAL -->
   <div class="social">
     <a href="https://www.instagram.com/folksfrequencies" target="_blank">instagram</a>
     <a href="https://www.tiktok.com/@folksfrequencies" target="_blank">tiktok</a>
   </div>
 
-  <!-- Floating words -->
   <script>
-    const words = ["hi","XD",":)"," :/","how did u get here?"];
-    document.addEventListener('click', e=>{
-      const word = document.createElement('span');
-      word.textContent = words[Math.floor(Math.random()*words.length)];
-      word.style.position = 'absolute';
-      word.style.left = e.pageX+'px';
-      word.style.top = e.pageY+'px';
-      word.style.fontSize = Math.random()*16+10+'px';
-      word.style.opacity = 0.7;
-      word.style.color = '#f5ffe7';
-      word.style.userSelect = 'none';
-      document.body.appendChild(word);
-      setTimeout(()=>word.remove(),1000);
+    /* ---- CURSOR TRAIL ---- */
+    const trailContainer = document.getElementById('trail-container');
+    document.addEventListener('mousemove', e => {
+      const dot = document.createElement('div');
+      dot.className = 'trail';
+      dot.style.left = e.pageX + 'px';
+      dot.style.top = e.pageY + 'px';
+      trailContainer.appendChild(dot);
+      setTimeout(()=>dot.remove(), 800);
     });
-  </script>
 
-  <!-- Cursor trail -->
-  <script>
-    document.addEventListener('mousemove',e=>{
-      const trail=document.createElement('div');
-      trail.className='trail';
-      trail.style.left=e.pageX+'px';
-      trail.style.top=e.pageY+'px';
-      document.body.appendChild(trail);
-      setTimeout(()=>trail.remove(),300);
-    });
-  </script>
+    /* ---- SCROLLING MESSAGES ---- */
+    const messages = document.querySelectorAll('.chat-container .message');
+    let i = 0;
 
-  <!-- Chat typing loop -->
-  <script>
-    const chatContainer = document.getElementById('chat');
-    const messages = [
-      {side:'user1', text:"why'd we end up in this timeline?"},
-      {side:'user2', text:"you just did"},
-      {side:'user1', text:"can i change the narrative to my story?"},
-      {side:'user2', text:"you have power to do whatever you want. to fight for the world you want to live in."},
-      {side:'user1', text:"sometimes i forget that i have power."},
-      {side:'user2', text:"we all forget sometimes..."},
-      {side:'user1', text:"do you think nihilism is weaker than optimism?"},
-      {side:'user2', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
-    ];
-
-    let currentMsg = 0;
-
-    function typeMessage(msgObj, callback){
-      const div = document.createElement('div');
-      div.className = 'chat-message '+msgObj.side;
-      chatContainer.appendChild(div);
-      let i = 0;
-      function type(){
-        if(i<msgObj.text.length){
-          div.textContent += msgObj.text.charAt(i);
-          i++;
-          setTimeout(type, 80); // average typing speed
-        } else {
-          setTimeout(()=>backspace(),1000);
+    function typeMessage(msgEl, text, callback){
+      let idx = 0;
+      msgEl.style.opacity=1;
+      msgEl.textContent='';
+      const typeInterval = setInterval(()=>{
+        msgEl.textContent += text[idx++];
+        if(idx === text.length){
+          clearInterval(typeInterval);
+          setTimeout(()=>backspace(msgEl, callback), 1000);
         }
-      }
-      function backspace(){
-        if(div.textContent.length>0){
-          div.textContent = div.textContent.slice(0,-1);
-          setTimeout(backspace,40);
-        } else {
+      }, 60);
+    }
+
+    function backspace(msgEl, callback){
+      let text = msgEl.textContent;
+      let idx = text.length;
+      const backInterval = setInterval(()=>{
+        msgEl.textContent = text.substring(0, idx--);
+        if(idx < 0){
+          clearInterval(backInterval);
           callback();
         }
-      }
-      type();
+      },30);
     }
 
-    function runChat(){
-      currentMsg=0;
-      chatContainer.innerHTML='';
-      function next(){
-        if(currentMsg<messages.length){
-          typeMessage(messages[currentMsg], ()=>{currentMsg++; next();});
-        } else {
-          setTimeout(runChat,1500);
+    function runChat(i){
+      typeMessage(messages[i], messages[i].textContent, ()=>{
+        i++;
+        if(i<messages.length){
+          runChat(i);
+        }else{
+          // loop after last message
+          runChat(0);
         }
-      }
-      next();
+      });
     }
+    runChat(0);
 
-    runChat();
+    /* ---- PATIENCE CLICK WORDS ---- */
+    const words = ['hi', 'XD', ':)', ':/', 'how did u get here?'];
+    document.addEventListener('click', e=>{
+      const w = document.createElement('div');
+      w.textContent = words[Math.floor(Math.random()*words.length)];
+      w.style.position='absolute';
+      w.style.left = e.pageX+'px';
+      w.style.top = e.pageY+'px';
+      w.style.color = '#f5ffe7';
+      w.style.opacity='0.8';
+      w.style.fontSize='12px';
+      w.style.pointerEvents='none';
+      document.body.appendChild(w);
+      setTimeout(()=>w.remove(),1200);
+    });
+
   </script>
-
 </body>
 </html>
