@@ -23,7 +23,7 @@ body::before {
   inset: 0;
   background: linear-gradient(120deg, #0b0010, #001a0f, #120014);
   background-size: 400% 400%;
-  animation: gradientShift 25s ease infinite;
+  animation: gradientShift 20s ease infinite;
   z-index: -3;
 }
 
@@ -33,28 +33,34 @@ body::before {
   100% { background-position: 0% 50%; }
 }
 
-/* VHS Scanlines */
+/* STRONG VHS Scanlines */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   background: repeating-linear-gradient(
     to bottom,
-    rgba(255,255,255,0.05) 0px,
-    rgba(0,0,0,0.15) 1px,
-    rgba(0,0,0,0.15) 2px
+    rgba(255,255,255,0.08) 0px,
+    rgba(0,0,0,0.35) 2px,
+    rgba(0,0,0,0.35) 4px
   );
+  animation: vhsMove 0.25s infinite;
   mix-blend-mode: overlay;
   pointer-events: none;
   z-index: 10;
 }
 
-/* Subtle grain */
+@keyframes vhsMove {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(2px); }
+}
+
+/* Grain */
 .grain {
   position: fixed;
   inset: 0;
   background: url("https://www.transparenttextures.com/patterns/asfalt-dark.png");
-  opacity: 0.06;
+  opacity: 0.08;
   pointer-events: none;
   z-index: 9;
 }
@@ -63,6 +69,7 @@ body::after {
 .hero {
   text-align: center;
   padding: 80px 20px 30px;
+  animation: flicker 5s infinite;
 }
 
 .hero h1 {
@@ -74,7 +81,8 @@ body::after {
 
 .plus {
   color: #39ff14;
-  animation: flicker 0.15s infinite alternate;
+  text-shadow: 0 0 8px #39ff14;
+  animation: glitch 0.12s infinite alternate;
 }
 
 .hero .subtitle {
@@ -84,13 +92,18 @@ body::after {
 
 @keyframes tilt {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(0.7deg); }
+  100% { transform: rotate(0.8deg); }
+}
+
+@keyframes glitch {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
 }
 
 @keyframes flicker {
-  0% { opacity: 1; }
-  50% { opacity: 0.5; }
-  100% { opacity: 1; }
+  0%, 100% { opacity: 1; }
+  98% { opacity: 0.85; }
 }
 
 /* Scrolling Text */
@@ -104,7 +117,7 @@ body::after {
 .marquee span {
   display: inline-block;
   padding-left: 100%;
-  animation: scroll 20s linear infinite;
+  animation: scroll 18s linear infinite;
   opacity: 0.5;
 }
 
@@ -145,10 +158,16 @@ body::after {
   max-width: 700px;
   margin: 80px auto;
   padding: 20px;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid rgba(57,255,20,0.4);
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(57,255,20,0.5);
   border-radius: 10px;
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(4px);
+  animation: chatWobble 3s infinite;
+}
+
+@keyframes chatWobble {
+  0%,100% { transform: translateX(0); }
+  50% { transform: translateX(1px); }
 }
 
 .message {
@@ -158,6 +177,7 @@ body::after {
   border-radius: 6px;
   line-height: 1.5;
   animation: fadeIn 0.5s ease;
+  word-wrap: break-word;
 }
 
 @keyframes fadeIn {
@@ -172,7 +192,7 @@ body::after {
 }
 
 .right {
-  background: rgba(57,255,20,0.08);
+  background: rgba(57,255,20,0.1);
   color: #39ff14;
   margin-left: auto;
 }
@@ -240,38 +260,69 @@ body::after {
 const chatBox = document.getElementById("chatBox");
 
 const conversation = [
-  ["why'd we end up in this timeline?", "you just did"],
-  ["can i change the narrative to my story?", "you have power to do whatever you want. to fight for the world you want to live in."],
-  ["sometimes i forget that i have power.", "we all forget sometimes..."],
-  ["do you think nihilism is weaker than optimism?", "optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."]
+  ["you just did", "why'd we end up in this timeline?"],
+  ["you have power to do whatever you want. to fight for the world you want to live in.", "can i change the narrative to my story?"],
+  ["we all forget sometimes...", "sometimes i forget that i have power."],
+  ["optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort.", "do you think nihilism is weaker than optimism?"]
 ];
 
 let msgIndex = 0;
 
-function addMessage(text, side) {
+function typeMessage(text, side, callback) {
   const msg = document.createElement("div");
   msg.className = `message ${side}`;
   chatBox.appendChild(msg);
 
   let i = 0;
-  const interval = setInterval(() => {
+  const typer = setInterval(() => {
     msg.textContent += text[i];
     i++;
-    if (i >= text.length) clearInterval(interval);
+    if (i >= text.length) {
+      clearInterval(typer);
+      if (callback) callback();
+    }
   }, 40);
 }
 
 function playConversation() {
-  if (msgIndex >= conversation.length) return;
+  if (msgIndex >= conversation.length) {
+    setTimeout(clearConversation, 2000);
+    return;
+  }
 
-  const [q, a] = conversation[msgIndex];
-  addMessage(q, "left");
+  const [rightMsg, leftMsg] = conversation[msgIndex];
 
-  setTimeout(() => {
-    addMessage(a, "right");
-    msgIndex++;
-    setTimeout(playConversation, 1500);
-  }, 1500);
+  typeMessage(rightMsg, "right", () => {
+    setTimeout(() => {
+      typeMessage(leftMsg, "left", () => {
+        msgIndex++;
+        setTimeout(playConversation, 1200);
+      });
+    }, 1000);
+  });
+}
+
+function clearConversation() {
+  const messages = Array.from(document.querySelectorAll(".message"));
+  let i = messages.length - 1;
+
+  const eraser = setInterval(() => {
+    if (i < 0) {
+      clearInterval(eraser);
+      chatBox.innerHTML = "";
+      msgIndex = 0;
+      setTimeout(playConversation, 1000);
+      return;
+    }
+
+    let text = messages[i].textContent;
+    if (text.length > 0) {
+      messages[i].textContent = text.slice(0, -1);
+    } else {
+      messages[i].remove();
+      i--;
+    }
+  }, 30);
 }
 
 playConversation();
