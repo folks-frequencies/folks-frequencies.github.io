@@ -1,1 +1,326 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>folks + frequencies</title>
+
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
+
+<style>
+  /* -------------------- GENERAL STYLING -------------------- */
+  html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    font-family: 'Roboto Mono', monospace;
+    background: hsl(287, 100%, 10.7%);
+    color: #f5ffe7;
+    height: 100%;
+    scroll-behavior: smooth;
+    cursor: crosshair;
+  }
+
+  /* -------------------- ANIMATED BACKGROUND -------------------- */
+  body::before {
+    content: "";
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: linear-gradient(120deg, #0B0010, hsl(287, 100%, 10.7%), #001500);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+    z-index: -3;
+  }
+
+  @keyframes gradientShift {
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+  }
+
+  /* -------------------- NOISE / VHS -------------------- */
+  body::after {
+    content: "";
+    position: fixed; top:0; left:0;
+    width:100%; height:100%;
+    pointer-events: none;
+    background: url("https://www.transparenttextures.com/patterns/noise.png");
+    opacity: 0.05;
+    z-index: -2;
+  }
+
+  /* -------------------- DIGITAL DUST -------------------- */
+  .dust {
+    position: fixed;
+    width: 2px;
+    height: 2px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: -1;
+    animation: floatDust 10s linear infinite;
+  }
+
+  @keyframes floatDust {
+    0% {transform: translateY(0) translateX(0);}
+    100% {transform: translateY(-200vh) translateX(50vw);}
+  }
+
+  /* -------------------- HERO -------------------- */
+  .hero {
+    text-align: center;
+    padding: 150px 20px 100px 20px;
+  }
+
+  .hero h1 {
+    font-family: 'Courier Prime', monospace;
+    font-size: 4.5rem;
+    text-transform: lowercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 .plus {
+    color: #39FF14;
+    animation: flickerPlus 1s infinite;
+  }
+
+  @keyframes flickerPlus {
+    0%,100% {opacity:1;}
+    25% {opacity:0.3;}
+    50% {opacity:0.8;}
+    75% {opacity:0.5;}
+  }
+
+  .hero .subtitle {
+    font-size: 1.5rem;
+    opacity: 0.6;
+    letter-spacing: 2px;
+  }
+
+  /* -------------------- EPISODES -------------------- */
+  .episodes {
+    padding: 80px 10%;
+    text-align: center;
+  }
+
+  .episodes h2 {
+    font-family: 'Courier Prime', monospace;
+    font-size: 3rem;
+    letter-spacing: 4px;
+    text-transform: lowercase;
+    margin-bottom: 60px;
+  }
+
+  .episode {
+    margin-bottom: 50px;
+    position: relative;
+  }
+
+  .episode h3 {
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.5rem;
+    opacity: 0.8;
+    letter-spacing: 3px;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+  .episode h3:hover::after {
+    content: " patience-- episode isn't out yet";
+    position: absolute;
+    left: 0;
+    top: 2rem;
+    font-size: 1rem;
+    opacity: 0.7;
+    color: #FF4D4D;
+    animation: fadeText 1s forwards;
+  }
+
+  @keyframes fadeText {
+    0%{opacity:0;}
+    50%{opacity:0.7;}
+    100%{opacity:0;}
+  }
+
+  /* -------------------- CHAT -------------------- */
+  .chat-section {
+    padding: 80px 10%;
+    text-align: center;
+  }
+
+  .chat-section h2 {
+    font-family: 'Courier Prime', monospace;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+  }
+
+  .chat-box {
+    max-width: 700px;
+    margin: 0 auto;
+    background: rgba(0,0,0,0.3);
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Courier Prime', monospace;
+    font-size: 1.1rem;
+  }
+
+  .message {
+    padding: 5px 10px;
+    margin: 10px 0;
+    display: inline-block;
+    max-width: 70%;
+    border-radius: 5px;
+    position: relative;
+  }
+
+  .msg-left { 
+    background: rgba(168,255,144,0.2); 
+    color: #A8FF90;
+    text-align: left;
+  }
+
+  .msg-right { 
+    background: rgba(195,160,255,0.2); 
+    color: #C3A0FF;
+    text-align: right;
+    float: right;
+  }
+
+  .cursor {
+    display:inline-block;
+    width: 10px;
+    background:#A8FF90;
+    animation: blink 0.7s step-start infinite;
+    margin-left: 2px;
+  }
+
+  @keyframes blink { 50% {opacity:0;} }
+
+  /* -------------------- GHOST WORDS -------------------- */
+  .ghost-word {
+    position: absolute;
+    font-family: 'Courier Prime', monospace;
+    font-size: 0.9rem;
+    color: #fff;
+    opacity: 0.6;
+    pointer-events: none;
+    animation: floatUp 1s forwards;
+  }
+
+  @keyframes floatUp {
+    0% {transform: translateY(0); opacity:0.8;}
+    100% {transform: translateY(-50px); opacity:0;}
+  }
+
+  /* -------------------- SCREEN SHAKE -------------------- */
+  .shake {
+    animation: shakeAnim 0.2s;
+  }
+
+  @keyframes shakeAnim {
+    0% {transform: translate(0px,0px);}
+    25% {transform: translate(2px, -2px);}
+    50% {transform: translate(-2px, 2px);}
+    75% {transform: translate(1px,-1px);}
+    100% {transform: translate(0px,0px);}
+  }
+
+</style>
+</head>
+
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>folks <span class="plus">+</span> frequencies</h1>
+  <p class="subtitle">- based in philly -</p>
+</section>
+
+<!-- EPISODES -->
+<section class="episodes">
+  <h2>volume 1</h2>
+  <div class="episode"><h3>ep 1</h3></div>
+  <div class="episode"><h3>ep 2</h3></div>
+  <div class="episode"><h3>ep 3</h3></div>
+</section>
+
+<!-- CHAT -->
+<section class="chat-section">
+  <h2>universe chat room</h2>
+  <div class="chat-box" id="chatBox"></div>
+</section>
+
+<script>
+/* -------------------- DIGITAL DUST -------------------- */
+for(let i=0;i<50;i++){
+  const d=document.createElement('div');
+  d.className='dust';
+  d.style.left=Math.random()*100+'vw';
+  d.style.top=Math.random()*100+'vh';
+  d.style.animationDuration=5+Math.random()*10+'s';
+  document.body.appendChild(d);
+}
+
+/* -------------------- FLOATING WORDS -------------------- */
+const words = ["hi","XD",":)",":/","how did u get here?"];
+document.body.addEventListener('click',(e)=>{
+  const w = document.createElement('div');
+  w.className='ghost-word';
+  w.textContent = words[Math.floor(Math.random()*words.length)];
+  w.style.left=e.clientX+'px';
+  w.style.top=e.clientY+'px';
+  document.body.appendChild(w);
+  setTimeout(()=>w.remove(),1000);
+  document.body.classList.add('shake');
+  setTimeout(()=>document.body.classList.remove('shake'),200);
+});
+
+/* -------------------- CHAT TYPING -------------------- */
+const chatBox = document.getElementById('chatBox');
+const conversation = [
+  {side:'left', text:"why'd we end up in this timeline?"},
+  {side:'right', text:"you just did"},
+  {side:'left', text:"can i change the narrative to my story?"},
+  {side:'right', text:"you have the power to do whatever you want, to fight for the world you want to live in."},
+  {side:'left', text:"sometimes i forget that i have power."},
+  {side:'right', text:"we all forget sometimes..."},
+  {side:'left', text:"do you think nihilism is weaker than optimism?"},
+  {side:'right', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."},
+];
+
+let i=0; let charIndex=0; let backspacing=false; let currentMsg;
+function typeChat(){
+  if(!currentMsg){
+    currentMsg=document.createElement('div');
+    currentMsg.className='message '+conversation[i].side;
+    chatBox.appendChild(currentMsg);
+  }
+  if(!backspacing){
+    currentMsg.textContent += conversation[i].text[charIndex];
+    charIndex++;
+    if(charIndex===conversation[i].text.length){
+      backspacing=true;
+      setTimeout(typeChat,800);
+      return;
+    }
+  } else {
+    currentMsg.textContent = currentMsg.textContent.slice(0,-1);
+    if(currentMsg.textContent.length===0){
+      backspacing=false;
+      i++;
+      if(i===conversation.length)i=0;
+      currentMsg=null;
+    }
+  }
+  setTimeout(typeChat,50);
+}
+typeChat();
+
+</script>
+
+</body>
+</html>
