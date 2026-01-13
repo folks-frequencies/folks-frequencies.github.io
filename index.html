@@ -1,345 +1,330 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>folks + frequencies</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>folks + frequencies</title>
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
-  <style>
-    html, body {
-      margin:0;
-      padding:0;
-      overflow-x:hidden;
-      font-family:'Roboto Mono', monospace;
-      height:100%;
-      background: linear-gradient(270deg, hsl(287,100%,10%), hsl(140,100%,5%), hsl(287,100%,10%));
-      background-size: 600% 600%;
-      animation: gradientBG 30s ease infinite;
-      color:#f5ffe7;
-      position:relative;
-    }
+<style>
+  /* --- Reset & base --- */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Roboto Mono', monospace;
+    background: linear-gradient(-45deg, hsl(287, 100%, 10.7%), #010a00, #0d0a14);
+    background-size: 400% 400%;
+    color: #f5ffe7;
+    overflow-x: hidden;
+    position: relative;
+  }
+  body::after {
+    content:"";
+    position: fixed;
+    top:0; left:0; width:100%; height:100%;
+    background: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+    opacity: 0.08;
+    pointer-events:none;
+    z-index:10;
+  }
 
-    @keyframes gradientBG {
-      0%{background-position:0% 50%;}
-      50%{background-position:100% 50%;}
-      100%{background-position:0% 50%;}
-    }
+  /* --- Title Section --- */
+  .hero {
+    padding: 80px 5%;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero h1 {
+    font-family: 'Courier Prime', monospace;
+    font-size: 4rem;
+    letter-spacing: 2px;
+    text-transform: lowercase;
+    display: inline-block;
+    animation: flicker 2s infinite alternate;
+  }
+  .hero h1 span {
+    color: #39ff14; /* glitchy green + */
+    animation: glitchSpan 1.5s infinite;
+  }
+  .hero .subtitle {
+    font-size: 1.5rem;
+    opacity: 0.6;
+    letter-spacing: 2px;
+    margin-top: 10px;
+    display:block;
+  }
+  .scrolling-text {
+    margin-top: 20px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow:hidden;
+    display:block;
+    width:100%;
+  }
+  .scrolling-text span {
+    display:inline-block;
+    padding-left:100%;
+    animation: scrollText 20s linear infinite;
+  }
 
-    /* VHS Lines */
-    body::before {
-      content:'';
-      position:fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background: repeating-linear-gradient(
-        to bottom,
-        rgba(255,255,255,0.08) 0px,
-        rgba(255,255,255,0.03) 2px,
-        transparent 2px,
-        transparent 4px
-      );
-      pointer-events:none;
-      z-index:20;
-    }
+  /* --- Episodes --- */
+  .episodes {
+    padding: 80px 5%;
+    text-align:center;
+  }
+  .episodes h2 {
+    font-family: 'Courier Prime', monospace;
+    font-size:3rem;
+    letter-spacing:4px;
+    text-transform: lowercase;
+    margin-bottom: 40px;
+    animation: flicker 2.5s infinite alternate;
+  }
+  .episode {
+    margin: 50px auto;
+    max-width:600px;
+    position: relative;
+    cursor:pointer;
+  }
+  .episode h3 {
+    font-family: 'Courier Prime', monospace;
+    font-size:1.5rem;
+    opacity:0.8;
+    letter-spacing:2px;
+  }
+  .episode .hover-msg {
+    position:absolute;
+    top:-30px;
+    left:50%;
+    transform:translateX(-50%);
+    color:#ff0000;
+    font-size:0.9rem;
+    max-width:90%;
+    text-align:center;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity 0.5s ease;
+  }
 
-    body::after {
-      content:"";
-      position:fixed;
-      top:0; left:0;
-      width:100%; height:100%;
-      background: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
-      opacity:0.07;
-      pointer-events:none;
-      z-index:21;
-    }
+  /* --- Chat --- */
+  .chat {
+    max-width:700px;
+    margin:80px auto;
+    padding:20px;
+    background: rgba(0,0,0,0.4);
+    border:1px solid #39ff14;
+    border-radius:10px;
+    font-size:1rem;
+    overflow:hidden;
+  }
+  .message {
+    display:flex;
+    margin-bottom:15px;
+    position:relative;
+  }
+  .message.user { justify-content:flex-start; }
+  .message.receiver { justify-content:flex-end; }
+  .message .bubble {
+    padding:10px 15px;
+    border-radius:10px;
+    max-width:70%;
+    position:relative;
+    overflow:hidden;
+  }
+  .message.user .bubble { background:#0b0f05; color:#39ff14; }
+  .message.receiver .bubble { background:#1c001c; color:#e1ffcc; }
+  .message .typing {
+    display:inline-block;
+    border-right:2px solid #f5ffe7;
+    animation: blinkCursor 0.8s steps(1) infinite;
+  }
 
-    /* Hero/Title */
-    .hero {
-      text-align:center;
-      padding:80px 20px 20px 20px;
-      position:relative;
-      z-index:30;
-    }
+  /* --- VHS Lines --- */
+  .vhs-lines {
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.02) 0px,
+      rgba(255,255,255,0.02) 1px,
+      transparent 2px,
+      transparent 3px
+    );
+    pointer-events:none;
+    z-index:20;
+  }
 
-    .hero h1 {
-      font-family: 'Courier Prime', monospace;
-      font-size:4.5rem;
-      letter-spacing:2px;
-      display:inline-block;
-      animation:titleGlitch 2s infinite;
-    }
+  /* --- Cursor Trail --- */
+  .cursor-trail {
+    position:absolute;
+    pointer-events:none;
+    z-index:30;
+    color:#f5ffe7;
+    font-size:0.8rem;
+    opacity:0.6;
+  }
 
-    .hero h1 .plus {
-      color:#39ff14;
-      animation: plusFlicker 0.1s infinite alternate;
-    }
+  /* --- Floating words on click --- */
+  .floating-word {
+    position:absolute;
+    font-size:0.8rem;
+    color:#f5ffe7;
+    opacity:0.8;
+    animation: floatUp 1.2s forwards;
+    pointer-events:none;
+  }
 
-    .hero .subtitle {
-      font-size:1.5rem;
-      opacity:0.6;
-      letter-spacing:2px;
-      margin-top:10px;
-      white-space: nowrap;
-    }
+  /* --- Keyframes --- */
+  @keyframes flicker {
+    0%,19%,21%,23%,25%,54%,100%{opacity:1;}
+    20%,22%,24%,55%{opacity:0.4;}
+  }
+  @keyframes glitchSpan {
+    0%,20%,40%,60%,80%,100%{transform:translate(0);}
+    10%,30%,50%,70%,90%{transform:translate(2px, -2px);}
+  }
+  @keyframes blinkCursor { 50%{border-color:transparent;} }
+  @keyframes scrollText {
+    0%{transform:translateX(100%);}
+    100%{transform:translateX(-100%);}
+  }
+  @keyframes floatUp {
+    0%{opacity:1; transform:translateY(0) scale(1);}
+    100%{opacity:0; transform:translateY(-40px) scale(1.2);}
+  }
 
-    /* Scrolling description under subtitle */
-    .scrolling-text {
-      margin-top:15px;
-      white-space: nowrap;
-      overflow:hidden;
-      font-size:1rem;
-      color:#f5ffe7;
-      opacity:0.6;
-    }
-
-    .scrolling-text span {
-      display:inline-block;
-      padding-left:100%;
-      animation: scrollText 40s linear infinite;
-    }
-
-    @keyframes scrollText {
-      0% { transform: translateX(0%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    /* Episodes */
-    .episodes {
-      padding:50px 10%;
-      position:relative;
-      z-index:30;
-    }
-
-    .episodes h2 {
-      font-family:'Courier Prime', monospace;
-      font-size:3rem;
-      letter-spacing:4px;
-      text-transform: lowercase;
-      margin-bottom:40px;
-    }
-
-    .episode {
-      margin-bottom:50px;
-      position:relative;
-    }
-
-    .episode h3 {
-      font-family:'Courier Prime', monospace;
-      font-size:1.2rem;
-      letter-spacing:2px;
-      cursor:pointer;
-      display:inline-block;
-      text-transform: lowercase;
-      position:relative;
-    }
-
-    .episode h3:hover::after {
-      content:"patience-- episode isn't out yet";
-      color:red;
-      position:absolute;
-      left:120%;
-      top:0;
-      white-space: nowrap;
-      font-size:0.9rem;
-      opacity:1;
-      transition: opacity 1s;
-    }
-
-    /* Chat */
-    .chat {
-      padding:50px 10%;
-      max-width:900px;
-      margin:0 auto;
-      position:relative;
-      z-index:30;
-    }
-
-    .message {
-      display:flex;
-      margin-bottom:20px;
-      font-family: 'Courier Prime', monospace;
-    }
-
-    .message .text {
-      padding:10px 15px;
-      border-radius:5px;
-      max-width:70%;
-      font-size:1rem;
-      line-height:1.5;
-      position:relative;
-    }
-
-    .message.user1 .text {
-      background: rgba(0,255,0,0.1);
-      color: #39ff14;
-      margin-left:auto;
-      text-align:right;
-    }
-
-    .message.user2 .text {
-      background: rgba(255,255,255,0.05);
-      color: #f5ffe7;
-      margin-right:auto;
-      text-align:left;
-    }
-
-    /* Cursor trail */
-    .trail {
-      position: fixed;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.6);
-      pointer-events: none;
-      z-index:50;
-    }
-
-    /* Floating words */
-    .float-word {
-      position: absolute;
-      font-size:0.8rem;
-      color:#f5ffe7;
-      opacity:0.8;
-      pointer-events:none;
-      font-family:'Courier Prime', monospace;
-      animation: floatUp 1.2s forwards;
-      z-index:40;
-    }
-
-    @keyframes floatUp {
-      0% { transform: translateY(0) scale(1); opacity:1; }
-      100% { transform: translateY(-50px) scale(1.2); opacity:0; }
-    }
-
-    /* Title animations */
-    @keyframes titleGlitch {
-      0% { transform: translate(0px,0px) rotate(0deg);}
-      20% { transform: translate(-2px,1px) rotate(-1deg);}
-      40% { transform: translate(1px,-1px) rotate(1deg);}
-      60% { transform: translate(-1px,1px) rotate(0deg);}
-      80% { transform: translate(2px,-1px) rotate(-1deg);}
-      100% { transform: translate(0px,0px) rotate(0deg);}
-    }
-
-    @keyframes plusFlicker {
-      0%{opacity:1;}
-      50%{opacity:0.3;}
-      100%{opacity:1;}
-    }
-
-    /* Mobile */
-    @media(max-width:768px){
-      .hero h1 { font-size:3rem; }
-      .hero .subtitle { font-size:1rem; }
-      .episodes { padding:30px 5%; }
-      .chat { padding:30px 5%; }
-      .episode h3:hover::after { left:50%; transform: translateX(0); }
-    }
-  </style>
+  /* --- Responsive --- */
+  @media(max-width:768px){
+    .hero h1 { font-size:3rem; }
+    .hero .subtitle { font-size:1rem; }
+    .episodes h2 { font-size:2rem; }
+    .episode h3 { font-size:1.2rem; }
+    .chat { padding:10px; font-size:0.9rem; }
+  }
+</style>
 </head>
 <body>
 
-  <section class="hero">
-    <h1>folks <span class="plus">+</span> frequencies</h1>
-    <p class="subtitle">- based in philly -</p>
-    <div class="scrolling-text"><span>this is a series with fictive, raw & real moments in philadelphia &nbsp;&nbsp;&nbsp;</span></div>
-  </section>
+<div class="hero">
+  <h1>folks <span>+</span> frequencies</h1>
+  <p class="subtitle">- based in philly -</p>
+  <div class="scrolling-text"><span>this is a web series with fictitious, raw & real moments in philadelphia</span></div>
+</div>
 
-  <section class="episodes">
-    <h2>volume 1</h2>
-    <div class="episode"><h3>ep 1</h3></div>
-    <div class="episode"><h3>ep 2</h3></div>
-    <div class="episode"><h3>ep 3</h3></div>
-  </section>
+<div class="episodes">
+  <h2>volume 1</h2>
+  <div class="episode" data-msg="patience-- episode isn't out yet">
+    <h3>ep 1</h3>
+    <div class="hover-msg"></div>
+  </div>
+  <div class="episode" data-msg="patience-- episode isn't out yet">
+    <h3>ep 2</h3>
+    <div class="hover-msg"></div>
+  </div>
+  <div class="episode" data-msg="patience-- episode isn't out yet">
+    <h3>ep 3</h3>
+    <div class="hover-msg"></div>
+  </div>
+</div>
 
-  <section class="chat" id="chat"></section>
+<div class="chat">
+  <!-- messages inserted dynamically -->
+</div>
 
-  <div id="cursorTrail"></div>
+<div class="vhs-lines"></div>
 
-  <script>
-    // Cursor trail
-    document.addEventListener('mousemove', e => {
-      const trail = document.createElement('div');
-      trail.className='trail';
-      trail.style.left=e.clientX+'px';
-      trail.style.top=e.clientY+'px';
-      document.body.appendChild(trail);
-      setTimeout(()=>trail.remove(),300);
+<script>
+  /* --- Cursor trail --- */
+  document.addEventListener('mousemove', e=>{
+    let trail = document.createElement('div');
+    trail.className='cursor-trail';
+    trail.style.left=e.pageX+'px';
+    trail.style.top=e.pageY+'px';
+    trail.textContent='•';
+    document.body.appendChild(trail);
+    setTimeout(()=>trail.remove(),800);
+  });
+
+  /* --- Floating words on click --- */
+  const words = ["hi","XD",":)",";/","how did u get here?"];
+  document.addEventListener('click', e=>{
+    const word = document.createElement('div');
+    word.className='floating-word';
+    word.style.left=e.pageX+'px';
+    word.style.top=e.pageY+'px';
+    word.textContent=words[Math.floor(Math.random()*words.length)];
+    document.body.appendChild(word);
+    setTimeout(()=>word.remove(),1200);
+  });
+
+  /* --- Episode hover messages --- */
+  document.querySelectorAll('.episode').forEach(ep=>{
+    const hover = ep.querySelector('.hover-msg');
+    ep.addEventListener('mouseenter',()=>{ hover.style.opacity=1; hover.textContent=ep.dataset.msg; });
+    ep.addEventListener('mouseleave',()=>{ hover.style.opacity=0; });
+  });
+
+  /* --- Chat typing --- */
+  const chatContainer=document.querySelector('.chat');
+  const conversation=[
+    {side:'receiver', text:"why'd we end up in this timeline?"},
+    {side:'user', text:"you just did"},
+    {side:'receiver', text:"can i change the narrative to my story?"},
+    {side:'user', text:"you have power to do whatever you want. to fight for the world you want to live in."},
+    {side:'receiver', text:"sometimes i forget that i have power."},
+    {side:'user', text:"we all forget sometimes..."},
+    {side:'receiver', text:"do you think nihilism is weaker than optimism?"},
+    {side:'user', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
+  ];
+
+  let index=0, charIndex=0;
+  let isDeleting=false;
+
+  function typeMessage(){
+    chatContainer.innerHTML='';
+    conversation.forEach((msg,i)=>{
+      const div = document.createElement('div');
+      div.className='message '+msg.side;
+      const bubble = document.createElement('div');
+      bubble.className='bubble';
+      if(i<index) bubble.textContent=msg.text;
+      if(i===index){
+        bubble.textContent=msg.text.substring(0,charIndex)+'|';
+      }
+      div.appendChild(bubble);
+      chatContainer.appendChild(div);
     });
 
-    // Floating words on click
-    const floatWords = ["hi","XD",":)",";/","how did u get here?"];
-    document.addEventListener('click', e=>{
-      const word = document.createElement('div');
-      word.className='float-word';
-      word.textContent=floatWords[Math.floor(Math.random()*floatWords.length)];
-      word.style.left=e.clientX+'px';
-      word.style.top=e.clientY+'px';
-      document.body.appendChild(word);
-      setTimeout(()=>word.remove(),1200);
+    const speed = isDeleting?50:100;
+    if(!isDeleting) charIndex++;
+    else charIndex--;
 
-      // subtle screen shake
-      document.body.style.transform='translate('+ (Math.random()*4-2)+'px,'+ (Math.random()*4-2)+'px)';
-      setTimeout(()=>{document.body.style.transform='translate(0,0)';},80);
-    });
-
-    // Chat typing with backspace, looping after full conversation
-    const chat=document.getElementById('chat');
-    const messages=[
-      {sender:'user1', text:"why'd we end up in this timeline?"},
-      {sender:'user2', text:"you just did"},
-      {sender:'user1', text:"can i change the narrative to my story?"},
-      {sender:'user2', text:"you have power to do whatever you want. to fight for the world you want to live in."},
-      {sender:'user1', text:"sometimes i forget that i have power."},
-      {sender:'user2', text:"we all forget sometimes..."},
-      {sender:'user1', text:"do you think nihilism is weaker than optimism?"},
-      {sender:'user2', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
-    ];
-
-    function startChat(){
-      chat.innerHTML='';
-      let index=0;
-
-      function typeMessage(msgObj, cb){
-        const div=document.createElement('div');
-        div.className='message '+msgObj.sender;
-        const textSpan=document.createElement('span');
-        textSpan.className='text';
-        div.appendChild(textSpan);
-        chat.appendChild(div);
-        chat.scrollTop=chat.scrollHeight;
-
-        let i=0;
-        function type(){
-          if(i<msgObj.text.length){
-            textSpan.textContent+=msgObj.text.charAt(i);
-            i++;
-            setTimeout(type,60);
-          } else setTimeout(cb,600);
-        }
-
-        type();
-      }
-
-      function next(){
-        if(index<messages.length){
-          typeMessage(messages[index], ()=>{
-            index++;
-            next();
-          });
-        } else {
-          setTimeout(()=>{startChat();},2000); // loop after full conversation
-        }
-      }
-
-      next();
+    if(!isDeleting && charIndex>conversation[index].text.length){
+      isDeleting=true;
+      setTimeout(typeMessage,1000);
+      return;
     }
+    if(isDeleting && charIndex<0){
+      isDeleting=false;
+      index=(index+1)%conversation.length;
+      charIndex=0;
+    }
+    setTimeout(typeMessage,speed);
+  }
+  typeMessage();
 
-    startChat();
-  </script>
+  /* --- Background gradient animation --- */
+  let bgPos=0;
+  function animateBg(){
+    bgPos+=0.2;
+    document.body.style.backgroundPosition=`${bgPos}% 50%`;
+    requestAnimationFrame(animateBg);
+  }
+  animateBg();
+</script>
 
 </body>
 </html>
