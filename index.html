@@ -8,6 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
   <style>
+    /* === Base Styles === */
     * { box-sizing: border-box; }
     body, html {
       margin: 0;
@@ -27,6 +28,7 @@
       100% { background-position: 0% 50%; }
     }
 
+    /* === VHS / Analog Lines Overlay === */
     body::before {
       content:"";
       position:fixed;
@@ -34,8 +36,8 @@
       width:100%; height:100%;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(255,255,255,0.03) 0px,
-        rgba(255,255,255,0.03) 1px,
+        rgba(255,255,255,0.05) 0px,
+        rgba(255,255,255,0.05) 1px,
         transparent 1px,
         transparent 3px
       );
@@ -43,6 +45,7 @@
       z-index: 20;
     }
 
+    /* === Cursor Ghost Trail === */
     .trail {
       position: fixed;
       width: 6px;
@@ -52,8 +55,10 @@
       pointer-events: none;
       mix-blend-mode: difference;
       z-index: 50;
+      opacity: 0.8;
     }
 
+    /* === Hero / Title === */
     .hero {
       text-align: center;
       padding: 120px 10px 40px 10px;
@@ -75,136 +80,153 @@
     }
 
     @keyframes flickerTilt {
-      0%,100%{transform:rotate(0deg);opacity:1;}
-      20%{transform:rotate(-1deg);opacity:0.9;}
-      40%{transform:rotate(1deg);opacity:0.95;}
-      60%{transform:rotate(-0.5deg);opacity:0.97;}
-      80%{transform:rotate(0.5deg);opacity:0.93;}
+      0%, 100% { transform: rotate(0deg); opacity:1; }
+      20% { transform: rotate(-1deg); opacity:0.9; }
+      40% { transform: rotate(1deg); opacity:0.95; }
+      60% { transform: rotate(-0.5deg); opacity:0.97; }
+      80% { transform: rotate(0.5deg); opacity:0.93; }
     }
 
     @keyframes neonFlicker {
-      0%,100%{opacity:1;text-shadow:0 0 6px #0f0,0 0 20px #0f0;}
-      50%{opacity:0.3;text-shadow:none;}
+      0%, 100% { opacity: 1; text-shadow: 0 0 6px #0f0, 0 0 20px #0f0; }
+      50% { opacity: 0.3; text-shadow: none; }
     }
 
-    .hero .subtitle { font-size:1.3rem; opacity:0.6; letter-spacing:2px; margin-top:10px; }
+    .hero .subtitle {
+      font-size: 1.3rem;
+      opacity: 0.6;
+      letter-spacing: 2px;
+      margin-top: 10px;
+    }
 
     .scrolling-text {
-      margin-top:30px;
-      font-size:0.9rem;
-      max-width:600px;
-      margin-left:auto;
-      margin-right:auto;
-      white-space:nowrap;
-      overflow:hidden;
-      box-sizing:border-box;
+      margin-top: 30px;
+      font-size: 0.9rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      white-space: nowrap;
+      overflow: hidden;
+      box-sizing: border-box;
+      border-right: 2px solid #f5ffe7;
+      padding-right: 5px;
+      animation: scrollText 12s linear infinite;
     }
 
-    .scrolling-text span {
-      display:inline-block;
-      padding-left:100%;
-      animation: scrollText 20s linear infinite;
+    @keyframes scrollText {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
     }
 
-    @keyframes scrollText { 0%{transform:translateX(0);} 100%{transform:translateX(-100%);} }
+    /* === Episodes === */
+    .episodes {
+      padding: 80px 10%;
+    }
 
-    .episodes { padding:80px 10%; }
     .episodes h2 {
-      font-family:'Courier Prime', monospace;
-      font-size:3rem;
-      text-transform:lowercase;
-      letter-spacing:4px;
-      margin-bottom:40px;
-      animation:flickerTilt 2s infinite alternate;
+      font-family: 'Courier Prime', monospace;
+      font-size: 3rem;
+      text-transform: lowercase;
+      letter-spacing: 4px;
+      margin-bottom: 40px;
+      animation: flickerTilt 2s infinite alternate;
     }
 
     .episode {
-      margin-bottom:50px;
-      position:relative;
-      cursor:pointer;
+      margin-bottom: 50px;
+      position: relative;
+      cursor: pointer;
     }
 
     .episode h3 {
-      font-family:'Courier Prime', monospace;
-      font-size:1.3rem;
-      opacity:0.6;
-      letter-spacing:3px;
-      display:inline-block;
+      font-family: 'Courier Prime', monospace;
+      font-size: 1.3rem;
+      opacity: 0.6;
+      letter-spacing: 3px;
+      display: inline-block;
     }
 
     .patience-msg {
-      position:absolute;
-      top:0;
-      left:120px;
-      font-size:0.9rem;
-      color:red;
-      opacity:0;
-      transition:opacity 0.4s;
-      pointer-events:none;
+      position: absolute;
+      top: 0;
+      left: 120px;
+      font-size: 0.9rem;
+      color: red;
+      opacity: 0;
+      transition: opacity 0.4s;
+      pointer-events: none;
     }
 
     .episode:hover .patience-msg,
-    .episode.active .patience-msg { opacity:1; }
+    .episode.active .patience-msg {
+      opacity: 1;
+    }
 
+    /* === Chat === */
     .chat {
-      max-width:600px;
-      margin:60px auto;
-      padding:20px;
-      border:1px solid rgba(255,255,255,0.1);
-      border-radius:8px;
+      max-width: 600px;
+      margin: 60px auto;
+      padding: 20px;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
       background: rgba(0,0,0,0.4);
       font-family: 'Courier Prime', monospace;
-      font-size:0.95rem;
-      color:#f5ffe7;
-      overflow:hidden;
-      position:relative;
+      font-size: 0.95rem;
+      color: #f5ffe7;
+      overflow: hidden;
+      position: relative;
     }
 
     .message {
-      padding:8px 12px;
-      margin:5px 0;
-      border-radius:6px;
-      display:inline-block;
-      max-width:80%;
-      word-break:break-word;
-      position:relative;
+      padding: 8px 12px;
+      margin: 5px 0;
+      border-radius: 6px;
+      display: inline-block;
+      max-width: 80%;
+      word-break: break-word;
+      position: relative;
       animation: fadeInMsg 0.4s ease;
-      clear:both;
     }
 
-    .message.user { background: rgba(0,255,255,0.05); color:#8ff; float:right; }
-    .message.receiver { background: rgba(0,255,0,0.1); color:#0f0; float:left; }
+    .message.user { background: rgba(0,255,0,0.1); color: #0f0; float: left; clear: both; }
+    .message.receiver { background: rgba(0,255,255,0.05); color: #8ff; float: right; clear: both; }
 
-    @keyframes fadeInMsg { from{opacity:0;transform:translateY(5px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeInMsg { from {opacity:0; transform: translateY(5px);} to {opacity:1; transform: translateY(0);} }
 
+    /* === Floating Click Words === */
     .click-word {
-      position:absolute;
-      font-size:0.8rem;
-      color:#f5ffe7;
-      pointer-events:none;
-      opacity:0.8;
+      position: absolute;
+      font-size: 0.8rem;
+      color: #f5ffe7;
+      pointer-events: none;
+      opacity: 0.8;
       animation: floatUp 1s ease-out forwards;
     }
 
-    @keyframes floatUp { 0%{transform:translateY(0) scale(1);opacity:1;} 100%{transform:translateY(-50px) scale(0.8);opacity:0;} }
-
-    .social {
-      font-size:0.6rem;
-      opacity:0.5;
-      text-align:center;
-      margin:50px 0 20px 0;
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity: 1; }
+      100% { transform: translateY(-50px) scale(0.8); opacity:0; }
     }
 
-    .social a { color:#f5ffe7; margin:0 8px; text-decoration:none; }
+    /* === Social Links === */
+    .social {
+      font-size: 0.6rem;
+      opacity: 0.5;
+      text-align: center;
+      margin: 50px 0 20px 0;
+    }
+
+    .social a { color: #f5ffe7; margin: 0 8px; text-decoration: none; }
     .social a:hover { opacity:1; }
 
+    /* === Mobile Adjustments === */
     @media (max-width:768px){
-      .hero h1 { font-size:2.8rem; }
-      .hero .subtitle { font-size:1rem; }
+      .hero h1 { font-size: 2.8rem; }
+      .hero .subtitle { font-size: 1rem; }
       .scrolling-text { font-size:0.7rem; }
-      .episodes { padding:50px 8%; }
+      .episodes { padding: 50px 8%; }
       .episode h3 { font-size:1.1rem; }
-      .patience-msg { left:0; top:30px; }
+      .patience-msg { left: 0; top: 30px; }
       .chat { font-size:0.85rem; padding:15px; }
     }
   </style>
@@ -214,7 +236,9 @@
   <section class="hero">
     <h1>folks <span class="plus">+</span> frequencies</h1>
     <p class="subtitle">- based in philly -</p>
-    <div class="scrolling-text"><span>this is a series capturing fictitious, raw & real moments in philadelphia</span></div>
+    <div class="scrolling-text">
+      this is a series capturing fictitious, raw & real moments in philadelphia
+    </div>
   </section>
 
   <section class="episodes">
@@ -236,7 +260,9 @@
     </div>
   </section>
 
-  <div class="chat"></div>
+  <div class="chat">
+    <!-- Chat messages injected by JS -->
+  </div>
 
   <div class="social">
     <a href="https://www.instagram.com/folksfrequencies" target="_blank">instagram</a>
@@ -244,72 +270,73 @@
   </div>
 
   <script>
-    /* Cursor Trail */
+    /* === Cursor Ghost Trail === */
     const trailEls = [];
-    document.addEventListener('mousemove', e=>{
-      const t=document.createElement('div');
+    document.addEventListener('mousemove', e => {
+      const t = document.createElement('div');
       t.className='trail';
-      t.style.left=e.clientX+'px';
-      t.style.top=e.clientY+'px';
+      t.style.left = e.clientX+'px';
+      t.style.top = e.clientY+'px';
       document.body.appendChild(t);
       trailEls.push(t);
-      setTimeout(()=>{t.remove(); trailEls.shift();},500);
+      setTimeout(()=>{ t.remove(); trailEls.shift(); }, 500);
     });
 
-    /* Floating Click Words */
-    const words=['hi','XD',':)','how did u get here?'];
-    document.addEventListener('click', e=>{
-      const w=document.createElement('div');
+    /* === Floating Click Words === */
+    const words = ['hi','XD',':)','how did u get here?'];
+    document.addEventListener('click', e => {
+      const w = document.createElement('div');
       w.className='click-word';
-      w.style.left=(e.clientX+Math.random()*20-10)+'px';
-      w.style.top=(e.clientY+Math.random()*20-10)+'px';
-      w.textContent=words[Math.floor(Math.random()*words.length)];
+      w.style.left = (e.clientX+Math.random()*20-10)+'px';
+      w.style.top = (e.clientY+Math.random()*20-10)+'px';
+      w.textContent = words[Math.floor(Math.random()*words.length)];
       document.body.appendChild(w);
       setTimeout(()=>w.remove(),1000);
     });
 
-    /* Episodes patience pop */
-    const episodes=document.querySelectorAll('.episode');
-    episodes.forEach(ep=>{
-      ep.addEventListener('mouseenter', ()=>ep.classList.add('active'));
-      ep.addEventListener('mouseleave', ()=>ep.classList.remove('active'));
-      ep.addEventListener('touchstart', ()=>{
+    /* === Episodes patience pop === */
+    const episodes = document.querySelectorAll('.episode');
+    episodes.forEach(ep => {
+      ep.addEventListener('mouseenter', ()=> ep.classList.add('active'));
+      ep.addEventListener('mouseleave', ()=> ep.classList.remove('active'));
+      ep.addEventListener('touchstart', ()=> {
         ep.classList.add('active');
         setTimeout(()=>ep.classList.remove('active'),1500);
       });
     });
 
-    /* Chat Typing */
-    const chatData=[
-      {side:'user', text:"why'd we end up in this timeline?"},
-      {side:'receiver', text:"you just did"},
-      {side:'user', text:"can i change the narrative to my story?"},
-      {side:'receiver', text:"you have power to do whatever you want. to fight for the world you want to live in."},
-      {side:'user', text:"sometimes i forget that i have power."},
-      {side:'receiver', text:"we all forget sometimes..."},
-      {side:'user', text:"do you think nihilism is weaker than optimism?"},
-      {side:'receiver', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
+    /* === Chat Typing === */
+    const chatData = [
+      {side:'receiver', text:"why'd we end up in this timeline?"},
+      {side:'user', text:"you just did"},
+      {side:'receiver', text:"can i change the narrative to my story?"},
+      {side:'user', text:"you have power to do whatever you want. to fight for the world you want to live in."},
+      {side:'receiver', text:"sometimes i forget that i have power."},
+      {side:'user', text:"we all forget sometimes..."},
+      {side:'receiver', text:"do you think nihilism is weaker than optimism?"},
+      {side:'user', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
     ];
 
-    const chatContainer=document.querySelector('.chat');
-    let chatIndex=-1;
+    const chatContainer = document.querySelector('.chat');
+    let chatIndex = -1;
 
-    async function typeMessage(msgObj){
-      const msgDiv=document.createElement('div');
-      msgDiv.className='message '+msgObj.side;
+    async function typeMessage(msgObj) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = 'message ' + msgObj.side;
       chatContainer.appendChild(msgDiv);
 
-      let text='';
+      let text = '';
       for(let i=0;i<msgObj.text.length;i++){
-        text+=msgObj.text[i];
-        msgDiv.textContent=text;
+        text += msgObj.text[i];
+        msgDiv.textContent = text;
         await new Promise(r=>setTimeout(r,60));
       }
 
+      // Backspace if last message
       if(chatIndex===chatData.length-1){
         await new Promise(r=>setTimeout(r,1200));
         for(let i=text.length;i>=0;i--){
-          msgDiv.textContent=text.slice(0,i);
+          msgDiv.textContent = text.slice(0,i);
           await new Promise(r=>setTimeout(r,30));
         }
         chatContainer.innerHTML='';
@@ -325,6 +352,5 @@
     }
     runChat();
   </script>
-
 </body>
 </html>
