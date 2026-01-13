@@ -1,304 +1,362 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>folks + frequencies</title>
+  <meta charset="UTF-8">
+  <title>folks + frequencies</title>
 
-<!-- Fonts -->
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
-<style>
-html, body {
-  margin:0; padding:0;
-  height:100%; width:100%;
-  overflow-x:hidden;
-  font-family:'Roboto Mono', monospace;
-  background:#0b0010;
-  color:#f5ffe7;
-  scroll-behavior:smooth;
-  cursor: crosshair;
-}
+  <style>
+    /* Base styles */
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow-x: hidden;
+      font-family: 'Roboto Mono', monospace;
+      color: #f5ffe7;
+      background: hsl(287, 100%, 10%);
+    }
 
-/* -------------------- BACKGROUND GRADIENT -------------------- */
-body::before{
-  content:"";
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  background: linear-gradient(120deg, #0b0010, #1a001a, #001500);
-  background-size:400% 400%;
-  animation: gradientShift 20s ease infinite;
-  z-index:-3;
-}
+    body {
+      position: relative;
+      overflow-x: hidden;
+      cursor: none; /* hide default cursor for trail */
+    }
 
-@keyframes gradientShift{
-  0%{background-position:0% 50%;}
-  50%{background-position:100% 50%;}
-  100%{background-position:0% 50%;}
-}
+    /* Gradient background animation */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(120deg, hsl(287,100%,10%), hsl(120, 80%, 5%), hsl(160,80%,5%));
+      background-size: 600% 600%;
+      z-index: -2;
+      animation: gradientShift 30s ease infinite;
+    }
 
-/* -------------------- NOISE / VHS -------------------- */
-body::after{
-  content:"";
-  position:fixed; top:0; left:0; width:100%; height:100%;
-  pointer-events:none;
-  background: url("https://www.transparenttextures.com/patterns/noise.png");
-  opacity:0.06;
-  z-index:-2;
-}
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
 
-/* -------------------- DIGITAL DUST -------------------- */
-.dust{
-  position:fixed;
-  width:2px; height:2px;
-  background:rgba(255,255,255,0.2);
-  border-radius:50%;
-  pointer-events:none;
-  z-index:-1;
-}
+    /* VHS scanlines / noise overlay */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: url("https://www.transparenttextures.com/patterns/scan-lines.png");
+      opacity: 0.15;
+      pointer-events: none;
+      z-index: -1;
+    }
 
-/* -------------------- HERO -------------------- */
-.hero{
-  text-align:center;
-  padding:120px 20px 80px 20px;
-}
-.hero h1{
-  font-family:'Courier Prime', monospace;
-  font-size:4rem;
-  letter-spacing:2px;
-}
-.hero h1 .plus{
-  color:#39FF14;
-  animation:flickerPlus 1s infinite;
-}
-@keyframes flickerPlus{
-  0%,100%{opacity:1;}
-  25%{opacity:0.3;}
-  50%{opacity:0.8;}
-  75%{opacity:0.5;}
-}
-.hero .subtitle{
-  font-size:1.3rem;
-  opacity:0.6;
-  letter-spacing:2px;
-}
+    /* Hero section */
+    .hero {
+      text-align: center;
+      padding: 80px 20px 40px;
+      font-size: 4rem;
+      letter-spacing: 2px;
+      position: relative;
+    }
 
-/* -------------------- EPISODES -------------------- */
-.episodes{
-  padding:60px 10%;
-  text-align:center;
-}
-.episodes h2{
-  font-family:'Courier Prime', monospace;
-  font-size:2.5rem;
-  letter-spacing:4px;
-  text-transform:lowercase;
-  margin-bottom:40px;
-}
-.episode{
-  margin-bottom:40px;
-  position:relative;
-}
-.episode h3{
-  font-family:'Courier Prime', monospace;
-  font-size:1.3rem;
-  opacity:0.8;
-  letter-spacing:3px;
-  display:inline-block;
-  cursor:pointer;
-}
-.episode h3:hover::after{
-  content:" patience-- episode isn't out yet";
-  position:absolute;
-  left:0; top:2rem;
-  font-size:1rem;
-  opacity:0.7;
-  color:#FF4D4D;
-  animation:fadeText 1s forwards;
-}
-@keyframes fadeText{
-  0%{opacity:0;}
-  50%{opacity:0.7;}
-  100%{opacity:0;}
-}
+    .hero h1 {
+      font-family: 'Courier Prime', monospace;
+      text-transform: lowercase;
+      display: inline-block;
+      color: #f5ffe7;
+      animation: wobble 5s ease-in-out infinite;
+    }
 
-/* -------------------- CHAT -------------------- */
-.chat-section{
-  padding:60px 5%;
-  text-align:center;
-}
-.chat-section h2{
-  font-family:'Courier Prime', monospace;
-  font-size:2rem;
-  margin-bottom:30px;
-}
-.chat-box{
-  max-width:800px;
-  height:400px;
-  margin:0 auto;
-  background:rgba(0,0,0,0.35);
-  padding:20px;
-  border-radius:12px;
-  position:relative;
-  overflow-y:auto;
-  font-family:'Courier Prime', monospace;
-  font-size:1.1rem;
-}
-.message{
-  padding:5px 10px;
-  margin:8px 0;
-  display:inline-block;
-  max-width:70%;
-  border-radius:5px;
-  position:relative;
-  word-wrap:break-word;
-}
-.msg-left{
-  background:rgba(168,255,144,0.2);
-  color:#A8FF90;
-  text-align:left;
-  float:left;
-  clear:both;
-}
-.msg-right{
-  background:rgba(195,160,255,0.2);
-  color:#C3A0FF;
-  text-align:right;
-  float:right;
-  clear:both;
-}
-.cursor{
-  display:inline-block;
-  width:10px;
-  background:#A8FF90;
-  animation:blink 0.7s step-start infinite;
-  margin-left:2px;
-}
-@keyframes blink{50%{opacity:0;}}
+    .hero .plus {
+      color: #39ff14; /* neon green + */
+      animation: flicker 0.15s infinite alternate;
+    }
 
-/* -------------------- GHOST WORDS -------------------- */
-.ghost-word{
-  position:absolute;
-  font-family:'Courier Prime', monospace;
-  font-size:0.9rem;
-  color:#fff;
-  opacity:0.6;
-  pointer-events:none;
-  animation:floatUp 1s forwards;
-}
-@keyframes floatUp{
-  0%{transform:translateY(0); opacity:0.8;}
-  100%{transform:translateY(-50px); opacity:0;}
-}
+    .hero .subtitle {
+      font-size: 1.5rem;
+      opacity: 0.6;
+      margin-top: 10px;
+    }
 
-/* -------------------- SCREEN SHAKE -------------------- */
-.shake{
-  animation:shakeAnim 0.2s;
-}
-@keyframes shakeAnim{
-  0%{transform:translate(0px,0px);}
-  25%{transform:translate(2px,-2px);}
-  50%{transform:translate(-2px,2px);}
-  75%{transform:translate(1px,-1px);}
-  100%{transform:translate(0px,0px);}
-}
+    @keyframes wobble {
+      0%,100% { transform: rotate(0deg); }
+      25% { transform: rotate(0.5deg); }
+      50% { transform: rotate(-0.5deg); }
+      75% { transform: rotate(0.3deg); }
+    }
 
-/* -------------------- MOBILE -------------------- */
-@media(max-width:768px){
-  .hero h1{font-size:2.5rem;}
-  .hero .subtitle{font-size:1rem;}
-  .chat-box{height:300px;}
-  .episodes h2{font-size:2rem;}
-  .episode h3{font-size:1rem;}
-}
-</style>
+    @keyframes flicker {
+      0%, 50%, 100% { opacity: 1; }
+      25% { opacity: 0.5; }
+      75% { opacity: 0.8; }
+    }
+
+    /* Episodes section */
+    .episodes {
+      padding: 60px 10%;
+    }
+
+    .episodes h2 {
+      font-family: 'Courier Prime', monospace;
+      text-transform: lowercase;
+      letter-spacing: 4px;
+      font-size: 3rem;
+      margin-bottom: 40px;
+      display: inline-block;
+      animation: flicker 2s infinite;
+    }
+
+    .episode {
+      margin-bottom: 40px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .episode:hover .ghost-message {
+      opacity: 1;
+    }
+
+    .ghost-message {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -25px;
+      opacity: 0;
+      font-size: 1rem;
+      font-family: 'Courier Prime', monospace;
+      color: #ff4444;
+      transition: opacity 0.5s ease;
+      pointer-events: none;
+    }
+
+    /* Chat box */
+    .chat-box {
+      max-width: 700px;
+      width: 90%;
+      margin: 0 auto 80px;
+      background: rgba(0,0,0,0.3);
+      padding: 20px;
+      border-left: 2px solid #39ff14;
+      border-right: 2px solid #39ff14;
+      border-radius: 10px;
+      font-family: 'Courier Prime', monospace;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .message {
+      margin-bottom: 20px;
+      position: relative;
+      max-width: 80%;
+      padding: 8px 10px;
+      border-radius: 5px;
+      display: inline-block;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .user1 {
+      color: #f5ffe7;
+      background: rgba(255,255,255,0.05);
+      float: left;
+      clear: both;
+    }
+
+    .user2 {
+      color: #39ff14;
+      background: rgba(57,255,20,0.05);
+      float: right;
+      clear: both;
+    }
+
+    .typing-cursor {
+      display: inline-block;
+      width: 2px;
+      background: #f5ffe7;
+      animation: blink 1s steps(2, start) infinite;
+    }
+
+    @keyframes blink { 0%, 50% { opacity: 1; } 51%, 100% { opacity: 0; } }
+
+    /* Ghost words floating on click */
+    .ghost-word {
+      position: absolute;
+      font-size: 14px;
+      opacity: 0.8;
+      pointer-events: none;
+      color: #f5ffe7;
+      animation: floatup 1.5s forwards;
+    }
+
+    @keyframes floatup {
+      0% { transform: translateY(0px); opacity: 0.8; }
+      100% { transform: translateY(-80px) scale(0.8); opacity: 0; }
+    }
+
+    /* Cursor trail particle */
+    .trail {
+      position: absolute;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: #39ff14;
+      pointer-events: none;
+      opacity: 0.5;
+      animation: trailFade 0.6s forwards;
+    }
+
+    @keyframes trailFade {
+      to { opacity: 0; transform: scale(0.3); }
+    }
+
+    /* Digital dust / points */
+    .dust {
+      position: absolute;
+      width: 1px; height: 1px;
+      background: #f5ffe7;
+      opacity: 0.1;
+    }
+
+    /* Mobile optimization */
+    @media(max-width:768px) {
+      .hero h1 { font-size: 2.8rem; }
+      .hero .subtitle { font-size: 1rem; }
+      .chat-box { width: 95%; padding: 15px; }
+      .episodes h2 { font-size: 2rem; }
+      .episode { margin-bottom: 30px; }
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- HERO -->
-<section class="hero">
-  <h1>folks <span class="plus">+</span> frequencies</h1>
-  <p class="subtitle">- based in philly -</p>
-</section>
+  <!-- Hero -->
+  <section class="hero">
+    <h1>folks <span class="plus">+</span> frequencies</h1>
+    <p class="subtitle">- based in philly -</p>
+  </section>
 
-<!-- EPISODES -->
-<section class="episodes">
-  <h2>volume 1</h2>
-  <div class="episode"><h3>ep 1</h3></div>
-  <div class="episode"><h3>ep 2</h3></div>
-  <div class="episode"><h3>ep 3</h3></div>
-</section>
+  <!-- Episodes -->
+  <section class="episodes">
+    <h2>volume 1</h2>
+    <div class="episode">
+      <div class="ghost-message">patience -- episode isn't out yet</div>
+      ep 1
+    </div>
+    <div class="episode">
+      <div class="ghost-message">patience -- episode isn't out yet</div>
+      ep 2
+    </div>
+    <div class="episode">
+      <div class="ghost-message">patience -- episode isn't out yet</div>
+      ep 3
+    </div>
+  </section>
 
-<!-- CHAT -->
-<section class="chat-section">
-  <h2>universe chat room</h2>
+  <!-- Chat -->
   <div class="chat-box" id="chatBox"></div>
-</section>
 
-<script>
-/* -------------------- DIGITAL DUST -------------------- */
-for(let i=0;i<50;i++){
-  const d=document.createElement('div');
-  d.className='dust';
-  d.style.left=Math.random()*100+'vw';
-  d.style.top=Math.random()*100+'vh';
-  document.body.appendChild(d);
-}
+  <script>
+    // ---------------- Chat Messages ----------------
+    const chatBox = document.getElementById('chatBox');
+    const conversation = [
+      ["why'd we end up in this timeline?", "you just did"],
+      ["can i change the narrative to my story?", "you have power to do whatever you want. to fight for the world you want to live in."],
+      ["sometimes i forget that i have power.", "we all forget sometimes..."],
+      ["do you think nihilism is weaker than optimism?", "optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."]
+    ];
+    let currentMsg = '';
+    let charIndex = 0;
+    let i = 0;
+    let userSide = true; // user1 true, user2 false
+    let typingSpeed = 50;
 
-/* -------------------- FLOATING WORDS -------------------- */
-const words = ["hi","XD",":)",":/","how did u get here?"];
-document.body.addEventListener('click',(e)=>{
-  const w=document.createElement('div');
-  w.className='ghost-word';
-  w.textContent=words[Math.floor(Math.random()*words.length)];
-  w.style.left=e.clientX+'px';
-  w.style.top=e.clientY+'px';
-  document.body.appendChild(w);
-  setTimeout(()=>w.remove(),1000);
-  document.body.classList.add('shake');
-  setTimeout(()=>document.body.classList.remove('shake'),200);
-});
-
-/* -------------------- CHAT TYPING -------------------- */
-const chatBox=document.getElementById('chatBox');
-const conversation=[
-  {side:'msg-left', text:"why'd we end up in this timeline?"},
-  {side:'msg-right', text:"you just did"},
-  {side:'msg-left', text:"can i change the narrative to my story?"},
-  {side:'msg-right', text:"you have the power to do whatever you want, to fight for the world you want to live in."},
-  {side:'msg-left', text:"sometimes i forget that i have power."},
-  {side:'msg-right', text:"we all forget sometimes..."},
-  {side:'msg-left', text:"do you think nihilism is weaker than optimism?"},
-  {side:'msg-right', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."},
-];
-
-let i=0; let charIndex=0; let backspacing=false; let currentMsg=null;
-function typeChat(){
-  if(!currentMsg){
-    currentMsg=document.createElement('div');
-    currentMsg.className='message '+conversation[i].side;
-    chatBox.appendChild(currentMsg);
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
-  if(!backspacing){
-    currentMsg.textContent += conversation[i].text[charIndex];
-    charIndex++;
-    if(charIndex===conversation[i].text.length){
-      backspacing=true;
-      setTimeout(typeChat,1000);
-      return;
+    function typeMessage() {
+      const [user1Text, user2Text] = conversation[i];
+      const msgText = userSide ? user1Text : user2Text;
+      if (charIndex < msgText.length) {
+        if (!chatBox.lastChild || chatBox.lastChild.className !== (userSide ? 'message user1' : 'message user2')) {
+          const msgDiv = document.createElement('div');
+          msgDiv.className = 'message ' + (userSide ? 'user1' : 'user2');
+          chatBox.appendChild(msgDiv);
+        }
+        const lastMsg = chatBox.lastChild;
+        lastMsg.textContent = msgText.substring(0, charIndex + 1) + '|';
+        charIndex++;
+        setTimeout(typeMessage, typingSpeed);
+      } else {
+        chatBox.lastChild.textContent = msgText; // remove cursor
+        setTimeout(backspaceMessage, 1500);
+      }
     }
-  } else {
-    currentMsg.textContent=currentMsg.textContent.slice(0,-1);
-    if(currentMsg.textContent.length===0){
-      backspacing=false;
-      i++; if(i===conversation.length)i=0;
-      currentMsg=null;
+
+    function backspaceMessage() {
+      const lastMsg = chatBox.lastChild;
+      const text = lastMsg.textContent;
+      if (text.length > 0) {
+        lastMsg.textContent = text.substring(0, text.length -1) + '|';
+        setTimeout(backspaceMessage, 30);
+      } else {
+        charIndex = 0;
+        userSide = !userSide;
+        if (!userSide) {
+          i++;
+          if (i >= conversation.length) i = 0;
+        }
+        setTimeout(typeMessage, 200);
+      }
     }
-  }
-  chatBox.scrollTop = chatBox.scrollHeight;
-  setTimeout(typeChat,50);
-}
-typeChat();
-</script>
+
+    typeMessage();
+
+    // ---------------- Cursor trail ----------------
+    document.addEventListener('mousemove', e => {
+      const trail = document.createElement('div');
+      trail.className = 'trail';
+      trail.style.left = e.pageX + 'px';
+      trail.style.top = e.pageY + 'px';
+      document.body.appendChild(trail);
+      setTimeout(() => trail.remove(), 600);
+    });
+
+    // ---------------- Ghost words / click effects ----------------
+    const ghostWords = ['hi', 'XD', ':)', ':/', 'how did u get here?'];
+    let lastClick = 0;
+    document.addEventListener('click', e => {
+      const now = Date.now();
+      if (now - lastClick < 500) return; // rate limit
+      lastClick = now;
+
+      // Floating ghost word
+      const word = document.createElement('div');
+      word.className = 'ghost-word';
+      word.textContent = ghostWords[Math.floor(Math.random()*ghostWords.length)];
+      word.style.left = e.pageX + 'px';
+      word.style.top = e.pageY + 'px';
+      document.body.appendChild(word);
+      setTimeout(() => word.remove(), 1500);
+
+      // Random screen shake
+      if (Math.random() > 0.5) {
+        document.body.style.transform = `translate(${(Math.random()-0.5)*5}px, ${(Math.random()-0.5)*5}px)`;
+        setTimeout(()=>document.body.style.transform='translate(0,0)', 100);
+      }
+    });
+
+    // ---------------- Digital dust ----------------
+    for(let d=0; d<100; d++){
+      const dust = document.createElement('div');
+      dust.className = 'dust';
+      dust.style.left = Math.random()*window.innerWidth+'px';
+      dust.style.top = Math.random()*window.innerHeight+'px';
+      dust.style.width = Math.random()*2+'px';
+      dust.style.height = dust.style.width;
+      document.body.appendChild(dust);
+    }
+
+  </script>
+
 </body>
 </html>
