@@ -1,248 +1,243 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Digital Liminal Space</title>
+<meta charset="UTF-8">
+<title>folks + frequencies</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
 <style>
-html, body {
+/* --- Reset & body --- */
+body {
   margin: 0;
-  padding: 0;
-  overflow: hidden;
-  height: 100%;
-  font-family: monospace;
-  background: black;
-  color: #ccc;
-}
-
-/* Animated Gradient */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(120deg, #020202, #021a0f, #120018, #000);
+  height: 100vh;
+  overflow-x: hidden;
+  background: linear-gradient(135deg, #0a0a0a, #0b0f05, #110117);
   background-size: 400% 400%;
-  animation: bgShift 18s ease infinite;
-  z-index: -3;
-}
-@keyframes bgShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  color: #f5ffe7;
+  font-family: 'Roboto Mono', monospace;
+  letter-spacing: 1.5px;
+  position: relative;
 }
 
-/* VHS Lines */
-.vhs {
+@keyframes gradientAnim {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+body {
+  animation: gradientAnim 20s ease infinite;
+}
+
+/* VHS scanlines */
+.vhs-lines {
   pointer-events: none;
   position: fixed;
-  inset: 0;
+  top:0; left:0; width:100%; height:100%;
   background: repeating-linear-gradient(
-    to bottom,
-    rgba(255,255,255,0.06) 0px,
-    rgba(255,255,255,0.02) 2px,
-    rgba(0,0,0,0.08) 4px
+    0deg,
+    rgba(255,255,255,0.02),
+    rgba(255,255,255,0.02) 1px,
+    transparent 1px,
+    transparent 2px
   );
-  mix-blend-mode: overlay;
-  animation: vhsMove 0.15s infinite;
-  z-index: 2;
-}
-@keyframes vhsMove {
-  0% { transform: translateY(0); }
-  100% { transform: translateY(-4px); }
+  z-index: 9999;
 }
 
-/* Chat Box */
-.chat-container {
-  position: absolute;
-  bottom: 10%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 90%;
-  max-width: 420px;
-  height: 320px;
-  padding: 14px;
-  background: rgba(0,0,0,0.55);
-  border: 1px solid rgba(255,255,255,0.15);
-  overflow: hidden;
-}
-
-/* Messages */
-.message {
-  margin: 8px 0;
-  max-width: 80%;
-  line-height: 1.4;
-}
-
-.right {
-  margin-left: auto;
-  text-align: right;
-  color: #00ff9c;
-}
-
-.left {
-  margin-right: auto;
-  color: #bbb;
-}
-
-/* Cursor Trail */
-.trail {
+/* Cursor trail */
+.cursor-trail {
   position: fixed;
-  width: 6px;
-  height: 6px;
-  background: rgba(0,255,150,0.6);
+  width: 5px;
+  height: 5px;
+  background: #f5ffe7;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 5;
-  animation: fade 0.6s linear forwards;
-}
-@keyframes fade {
-  to { opacity: 0; transform: scale(2); }
+  z-index: 9998;
 }
 
-/* Click Words */
-.word {
-  position: fixed;
-  font-size: 12px;
-  color: rgba(255,255,255,0.5);
+/* Click floating words */
+.click-word {
+  position: absolute;
+  color: #f5ffe7;
+  font-size: 0.8rem;
+  opacity: 0.7;
   pointer-events: none;
-  animation: floatUp 1.5s ease-out forwards;
+  animation: floatUp 1.5s forwards;
 }
 @keyframes floatUp {
-  to {
-    transform: translateY(-60px);
-    opacity: 0;
-  }
+  0% {opacity:1; transform: translateY(0);}
+  100% {opacity:0; transform: translateY(-50px);}
 }
 
-/* Patience Hover */
+/* Header / Episode */
+.header {
+  text-align: center;
+  margin-top: 40px;
+}
+.header h1 {
+  font-family: 'Courier Prime', monospace;
+  font-size: 4rem;
+  text-transform: lowercase;
+  display: inline-block;
+  animation: flicker 2s infinite;
+}
+.header h1 span.plus {
+  color: #39ff14; /* glitchy neon green */
+  animation: flicker 1s infinite;
+}
+@keyframes flicker {
+  0%,19%,21%,23%,25%,54%,56%,100% {opacity:1;}
+  20%,22%,24%,55% {opacity:0.2;}
+}
+
+.header p {
+  opacity: 0.6;
+  margin-top: 5px;
+}
+
+/* Episodes hover */
 .episode {
-  position: absolute;
-  top: 12%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  color: #999;
-  cursor: pointer;
+  text-align:center;
+  margin-top:40px;
+  font-family: 'Courier Prime', monospace;
+  font-size: 2rem;
+  cursor:pointer;
+  position: relative;
+}
+.episode:hover::after {
+  content:"patience-- episode isn't out yet";
+  color:#f5ffe7;
+  position:absolute;
+  top:100%;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:1rem;
+  opacity:1;
+  transition:opacity 0.5s;
 }
 
-.patience {
-  position: absolute;
-  top: 16%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 14px;
-  color: #888;
+/* Chat box */
+.chat-container {
+  width: 90%;
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background: rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.1);
+  font-family: 'Roboto Mono', monospace;
+  position: relative;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 30px rgba(0,255,0,0.1);
+}
+
+.message {
+  display: flex;
+  margin-bottom: 15px;
   opacity: 0;
-  transition: 0.3s;
+  animation: appear 0.3s forwards;
+}
+.message.right { justify-content: flex-end; }
+.message.left { justify-content: flex-start; }
+
+.message .text {
+  padding: 10px 15px;
+  border-radius: 5px;
+  max-width: 70%;
+  font-size: 1rem;
+  line-height: 1.4;
+  position: relative;
 }
 
-.episode:hover + .patience {
-  opacity: 1;
-  color: #ff4040;
-}
+.message.right .text { background: #0b1b0f; color:#39ff14; }
+.message.left .text { background: rgba(255,255,255,0.1); color:#f5ffe7; }
+
+@keyframes appear {to{opacity:1; transform: translateY(0);} from{opacity:0; transform:translateY(10px);}}
+
 </style>
 </head>
-
 <body>
 
-<div class="episode">Episode 1</div>
-<div class="patience">patience — episode isn't out yet</div>
+<div class="vhs-lines"></div>
+<div class="header">
+  <h1>folks <span class="plus">+</span> frequencies</h1>
+  <p>- based in philly -</p>
+</div>
 
-<div class="chat-container" id="chat"></div>
-<div class="vhs"></div>
+<div class="episode">volume 1 ep 1</div>
+<div class="episode">volume 1 ep 2</div>
+<div class="episode">volume 1 ep 3</div>
+
+<div class="chat-container" id="chat">
+  <!-- messages inserted via JS -->
+</div>
+
+<div class="cursor-trail" id="cursor"></div>
 
 <script>
-/* Cursor Trail */
-document.addEventListener("mousemove", e => {
-  const t = document.createElement("div");
-  t.className = "trail";
-  t.style.left = e.clientX + "px";
-  t.style.top = e.clientY + "px";
-  document.body.appendChild(t);
-  setTimeout(() => t.remove(), 600);
+// --- Cursor trail ---
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
 });
 
-/* Click Words */
+// --- Click floating words ---
 const words = ["hi", "XD", ":)", ":/", "how did u get here?"];
-let lastClick = 0;
-
-document.addEventListener("click", e => {
-  const now = Date.now();
-  if (now - lastClick < 300) return;
-  lastClick = now;
-
-  const w = document.createElement("div");
-  w.className = "word";
-  w.textContent = words[Math.floor(Math.random() * words.length)];
-  w.style.left = e.clientX + "px";
-  w.style.top = e.clientY + "px";
-  document.body.appendChild(w);
-  setTimeout(() => w.remove(), 1500);
+document.addEventListener('click', e => {
+  const word = document.createElement('div');
+  word.className = 'click-word';
+  word.textContent = words[Math.floor(Math.random()*words.length)];
+  word.style.left = e.clientX + 'px';
+  word.style.top = e.clientY + 'px';
+  document.body.appendChild(word);
+  setTimeout(()=>word.remove(),1500);
 });
 
-/* CHAT SYSTEM */
-const chat = document.getElementById("chat");
-
+// --- Chat system ---
+const chatContainer = document.getElementById('chat');
 const convo = [
-  { side: "right", text: "why'd we end up in this timeline?" },
-  { side: "left",  text: "you just did." },
-  { side: "right", text: "can i change the narrative to my story?" },
-  { side: "left",  text: "you have power to do whatever you want. to fight for the world you want to live in." },
-  { side: "right", text: "sometimes i forget that i have power." },
-  { side: "left",  text: "we all forget sometimes..." },
-  { side: "right", text: "do you think nihilism is weaker than optimism?" },
-  { side: "left",  text: "optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort." }
+  {side:"right", text:"why'd we end up in this timeline?"},
+  {side:"left", text:"you just did"},
+  {side:"right", text:"can i change the narrative to my story?"},
+  {side:"left", text:"you have power to do whatever you want. to fight for the world you want to live in."},
+  {side:"right", text:"sometimes i forget that i have power."},
+  {side:"left", text:"we all forget sometimes..."},
+  {side:"right", text:"do you think nihilism is weaker than optimism?"},
+  {side:"left", text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
 ];
 
-let msgIndex = 0;
-let charIndex = 0;
-let currentDiv;
+let index = 0;
 
-function typeMessage() {
-  if (!currentDiv) {
-    currentDiv = document.createElement("div");
-    currentDiv.className = "message " + convo[msgIndex].side;
-    chat.appendChild(currentDiv);
-  }
-
-  const text = convo[msgIndex].text;
-
-  if (charIndex < text.length) {
-    currentDiv.textContent += text.charAt(charIndex);
-    charIndex++;
-    setTimeout(typeMessage, 40);
-  } else {
-    setTimeout(() => {
-      msgIndex++;
-      charIndex = 0;
-      currentDiv = null;
-
-      if (msgIndex < convo.length) {
-        typeMessage();
-      } else {
-        setTimeout(clearChat, 2500);
-      }
-    }, 800);
-  }
+function typeMessage(msg, container, callback) {
+  container.textContent = '';
+  let i=0;
+  let interval = setInterval(()=>{
+    container.textContent += msg[i];
+    i++;
+    if(i>=msg.length){clearInterval(interval); callback();}
+  },50);
 }
 
-function clearChat() {
-  let interval = setInterval(() => {
-    if (chat.textContent.length > 0) {
-      chat.textContent = chat.textContent.slice(0, -1);
-    } else {
-      clearInterval(interval);
-      msgIndex = 0;
-      charIndex = 0;
-      currentDiv = null;
-      typeMessage();
-    }
-  }, 20);
+function showNext() {
+  if(index>=convo.length){ 
+    setTimeout(()=>{chatContainer.innerHTML=''; index=0; showNext();},1000);
+    return;
+  }
+  const m = convo[index];
+  const div = document.createElement('div');
+  div.className = 'message '+m.side;
+  const text = document.createElement('div');
+  text.className='text';
+  div.appendChild(text);
+  chatContainer.appendChild(div);
+  typeMessage(m.text, text, ()=>{
+    index++;
+    showNext();
+  });
 }
+showNext();
 
-typeMessage();
 </script>
-
 </body>
 </html>
