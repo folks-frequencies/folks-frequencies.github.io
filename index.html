@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
   <style>
-    /* ----------------- BODY ----------------- */
     html, body {
       margin:0;
       padding:0;
@@ -29,7 +28,7 @@
       100%{background-position:0% 50%;}
     }
 
-    /* ----------------- VHS LINES ----------------- */
+    /* VHS Lines */
     body::before {
       content:'';
       position:fixed;
@@ -37,8 +36,8 @@
       width:100%; height:100%;
       background: repeating-linear-gradient(
         to bottom,
-        rgba(255,255,255,0.05) 0px,
-        rgba(255,255,255,0.02) 2px,
+        rgba(255,255,255,0.08) 0px,
+        rgba(255,255,255,0.03) 2px,
         transparent 2px,
         transparent 4px
       );
@@ -57,10 +56,10 @@
       z-index:21;
     }
 
-    /* ----------------- TITLE ----------------- */
+    /* Hero/Title */
     .hero {
       text-align:center;
-      padding:80px 20px 40px 20px;
+      padding:80px 20px 20px 20px;
       position:relative;
       z-index:30;
     }
@@ -84,21 +83,16 @@
       letter-spacing:2px;
       margin-top:10px;
       white-space: nowrap;
-      overflow:hidden;
     }
 
-    /* ----------------- SCROLLING TEXT ----------------- */
+    /* Scrolling description under subtitle */
     .scrolling-text {
-      position:fixed;
-      bottom:0;
-      width:100%;
+      margin-top:15px;
       white-space: nowrap;
       overflow:hidden;
       font-size:1rem;
       color:#f5ffe7;
-      opacity:0.4;
-      pointer-events:none;
-      z-index:25;
+      opacity:0.6;
     }
 
     .scrolling-text span {
@@ -112,7 +106,7 @@
       100% { transform: translateX(-100%); }
     }
 
-    /* ----------------- EPISODES ----------------- */
+    /* Episodes */
     .episodes {
       padding:50px 10%;
       position:relative;
@@ -154,7 +148,7 @@
       transition: opacity 1s;
     }
 
-    /* ----------------- CHAT ----------------- */
+    /* Chat */
     .chat {
       padding:50px 10%;
       max-width:900px;
@@ -192,7 +186,7 @@
       text-align:left;
     }
 
-    /* ----------------- CURSOR TRAIL ----------------- */
+    /* Cursor trail */
     .trail {
       position: fixed;
       width: 6px;
@@ -203,7 +197,7 @@
       z-index:50;
     }
 
-    /* ----------------- CLICK FLOATING WORDS ----------------- */
+    /* Floating words */
     .float-word {
       position: absolute;
       font-size:0.8rem;
@@ -220,7 +214,7 @@
       100% { transform: translateY(-50px) scale(1.2); opacity:0; }
     }
 
-    /* ----------------- TITLE ANIMATIONS ----------------- */
+    /* Title animations */
     @keyframes titleGlitch {
       0% { transform: translate(0px,0px) rotate(0deg);}
       20% { transform: translate(-2px,1px) rotate(-1deg);}
@@ -236,7 +230,7 @@
       100%{opacity:1;}
     }
 
-    /* ----------------- MOBILE ----------------- */
+    /* Mobile */
     @media(max-width:768px){
       .hero h1 { font-size:3rem; }
       .hero .subtitle { font-size:1rem; }
@@ -246,19 +240,14 @@
     }
   </style>
 </head>
-
 <body>
 
-  <!-- TITLE -->
   <section class="hero">
     <h1>folks <span class="plus">+</span> frequencies</h1>
     <p class="subtitle">- based in philly -</p>
+    <div class="scrolling-text"><span>this is a series with fictive, raw & real moments in philadelphia &nbsp;&nbsp;&nbsp;</span></div>
   </section>
 
-  <!-- SCROLLING TEXT -->
-  <div class="scrolling-text"><span>this is a series with fictive, raw & real moments in philadelphia &nbsp;&nbsp;&nbsp;</span></div>
-
-  <!-- EPISODES -->
   <section class="episodes">
     <h2>volume 1</h2>
     <div class="episode"><h3>ep 1</h3></div>
@@ -266,14 +255,12 @@
     <div class="episode"><h3>ep 3</h3></div>
   </section>
 
-  <!-- CHAT -->
   <section class="chat" id="chat"></section>
 
-  <!-- CURSOR TRAIL -->
   <div id="cursorTrail"></div>
 
   <script>
-    // ---------------- CURSOR TRAIL ----------------
+    // Cursor trail
     document.addEventListener('mousemove', e => {
       const trail = document.createElement('div');
       trail.className='trail';
@@ -283,7 +270,7 @@
       setTimeout(()=>trail.remove(),300);
     });
 
-    // ---------------- FLOATING WORDS ON CLICK ----------------
+    // Floating words on click
     const floatWords = ["hi","XD",":)",";/","how did u get here?"];
     document.addEventListener('click', e=>{
       const word = document.createElement('div');
@@ -299,7 +286,7 @@
       setTimeout(()=>{document.body.style.transform='translate(0,0)';},80);
     });
 
-    // ---------------- CHAT TYPING LOOP ----------------
+    // Chat typing with backspace, looping after full conversation
     const chat=document.getElementById('chat');
     const messages=[
       {sender:'user1', text:"why'd we end up in this timeline?"},
@@ -312,46 +299,43 @@
       {sender:'user2', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
     ];
 
-    let msgIndex=0;
-
-    function typeMessage(msgObj, callback){
-      const div=document.createElement('div');
-      div.className='message '+msgObj.sender;
-      const textSpan=document.createElement('span');
-      textSpan.className='text';
-      div.appendChild(textSpan);
-      chat.appendChild(div);
-      chat.scrollTop=chat.scrollHeight;
-
-      let i=0;
-      function type(){
-        if(i<msgObj.text.length){
-          textSpan.textContent+=msgObj.text.charAt(i);
-          i++;
-          setTimeout(type,60);
-        } else setTimeout(backspace,800);
-      }
-
-      function backspace(){
-        if(i>0){
-          textSpan.textContent=textSpan.textContent.slice(0,-1);
-          i--;
-          setTimeout(backspace,50);
-        } else callback();
-      }
-
-      type();
-    }
-
     function startChat(){
       chat.innerHTML='';
-      msgIndex=0;
-      function nextMsg(){
-        if(msgIndex<messages.length){
-          typeMessage(messages[msgIndex], ()=>{msgIndex++; nextMsg();});
-        } else setTimeout(startChat,2000);
+      let index=0;
+
+      function typeMessage(msgObj, cb){
+        const div=document.createElement('div');
+        div.className='message '+msgObj.sender;
+        const textSpan=document.createElement('span');
+        textSpan.className='text';
+        div.appendChild(textSpan);
+        chat.appendChild(div);
+        chat.scrollTop=chat.scrollHeight;
+
+        let i=0;
+        function type(){
+          if(i<msgObj.text.length){
+            textSpan.textContent+=msgObj.text.charAt(i);
+            i++;
+            setTimeout(type,60);
+          } else setTimeout(cb,600);
+        }
+
+        type();
       }
-      nextMsg();
+
+      function next(){
+        if(index<messages.length){
+          typeMessage(messages[index], ()=>{
+            index++;
+            next();
+          });
+        } else {
+          setTimeout(()=>{startChat();},2000); // loop after full conversation
+        }
+      }
+
+      next();
     }
 
     startChat();
