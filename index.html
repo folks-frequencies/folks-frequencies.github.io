@@ -1,243 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>folks + frequencies</title>
+  <meta charset="UTF-8">
+  <title>folks + frequencies</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
 
-<link href="https://fonts.googleapis.com/css2?family=Courier+Prime&family=Roboto+Mono&display=swap" rel="stylesheet">
+  <style>
+    /* -------- BODY & BASE -------- */
+    body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: 'Roboto Mono', monospace;
+      background: linear-gradient(270deg, hsl(287,100%,10%), hsl(140,100%,5%), hsl(287,100%,10%));
+      background-size: 600% 600%;
+      animation: gradientBG 30s ease infinite;
+      color: #f5ffe7;
+      position: relative;
+      height: 100%;
+    }
 
-<style>
-/* --- Reset & body --- */
-body {
-  margin: 0;
-  height: 100vh;
-  overflow-x: hidden;
-  background: linear-gradient(135deg, #0a0a0a, #0b0f05, #110117);
-  background-size: 400% 400%;
-  color: #f5ffe7;
-  font-family: 'Roboto Mono', monospace;
-  letter-spacing: 1.5px;
-  position: relative;
-}
+    @keyframes gradientBG {
+      0%{background-position:0% 50%;}
+      50%{background-position:100% 50%;}
+      100%{background-position:0% 50%;}
+    }
 
-@keyframes gradientAnim {
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
-body {
-  animation: gradientAnim 20s ease infinite;
-}
+    /* -------- VHS ANALOG LINES -------- */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0.05) 0px,
+        rgba(255,255,255,0.05) 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      pointer-events: none;
+      z-index: 20;
+    }
 
-/* VHS scanlines */
-.vhs-lines {
-  pointer-events: none;
-  position: fixed;
-  top:0; left:0; width:100%; height:100%;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255,255,255,0.02),
-    rgba(255,255,255,0.02) 1px,
-    transparent 1px,
-    transparent 2px
-  );
-  z-index: 9999;
-}
+    body::after {
+      content:"";
+      position: fixed;
+      top:0; left:0;
+      width:100%; height:100%;
+      background: url("https://www.transparenttextures.com/patterns/concrete-wall.png");
+      opacity: 0.07;
+      pointer-events:none;
+      z-index: 21;
+    }
 
-/* Cursor trail */
-.cursor-trail {
-  position: fixed;
-  width: 5px;
-  height: 5px;
-  background: #f5ffe7;
-  border-radius: 50%;
-  pointer-events: none;
-  z-index: 9998;
-}
+    /* -------- TITLE -------- */
+    .hero {
+      text-align: center;
+      padding: 80px 20px 40px 20px;
+      position: relative;
+      z-index: 30;
+    }
 
-/* Click floating words */
-.click-word {
-  position: absolute;
-  color: #f5ffe7;
-  font-size: 0.8rem;
-  opacity: 0.7;
-  pointer-events: none;
-  animation: floatUp 1.5s forwards;
-}
-@keyframes floatUp {
-  0% {opacity:1; transform: translateY(0);}
-  100% {opacity:0; transform: translateY(-50px);}
-}
+    .hero h1 {
+      font-family: 'Courier Prime', monospace;
+      font-size: 4.5rem;
+      text-transform: lowercase;
+      letter-spacing: 2px;
+      display: inline-block;
+      animation: titleGlitch 2s infinite;
+    }
 
-/* Header / Episode */
-.header {
-  text-align: center;
-  margin-top: 40px;
-}
-.header h1 {
-  font-family: 'Courier Prime', monospace;
-  font-size: 4rem;
-  text-transform: lowercase;
-  display: inline-block;
-  animation: flicker 2s infinite;
-}
-.header h1 span.plus {
-  color: #39ff14; /* glitchy neon green */
-  animation: flicker 1s infinite;
-}
-@keyframes flicker {
-  0%,19%,21%,23%,25%,54%,56%,100% {opacity:1;}
-  20%,22%,24%,55% {opacity:0.2;}
-}
+    .hero h1 .plus {
+      color: #39ff14;
+      animation: plusFlicker 0.1s infinite alternate;
+    }
 
-.header p {
-  opacity: 0.6;
-  margin-top: 5px;
-}
+    .hero .subtitle {
+      font-size: 1.5rem;
+      opacity: 0.6;
+      letter-spacing: 2px;
+      margin-top: 10px;
+      white-space: nowrap;
+      overflow: hidden;
+    }
 
-/* Episodes hover */
-.episode {
-  text-align:center;
-  margin-top:40px;
-  font-family: 'Courier Prime', monospace;
-  font-size: 2rem;
-  cursor:pointer;
-  position: relative;
-}
-.episode:hover::after {
-  content:"patience-- episode isn't out yet";
-  color:#f5ffe7;
-  position:absolute;
-  top:100%;
-  left:50%;
-  transform:translateX(-50%);
-  font-size:1rem;
-  opacity:1;
-  transition:opacity 0.5s;
-}
+    /* -------- SCROLLING TEXT -------- */
+    .scrolling-text {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      font-size: 1rem;
+      color: #f5ffe7;
+      opacity: 0.4;
+      pointer-events: none;
+      z-index: 25;
+    }
 
-/* Chat box */
-.chat-container {
-  width: 90%;
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  background: rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.1);
-  font-family: 'Roboto Mono', monospace;
-  position: relative;
-  overflow: hidden;
-  border-radius: 10px;
-  box-shadow: 0 0 30px rgba(0,255,0,0.1);
-}
+    .scrolling-text span {
+      display: inline-block;
+      padding-left: 100%;
+      animation: scrollText 40s linear infinite;
+    }
 
-.message {
-  display: flex;
-  margin-bottom: 15px;
-  opacity: 0;
-  animation: appear 0.3s forwards;
-}
-.message.right { justify-content: flex-end; }
-.message.left { justify-content: flex-start; }
+    @keyframes scrollText {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-100%); }
+    }
 
-.message .text {
-  padding: 10px 15px;
-  border-radius: 5px;
-  max-width: 70%;
-  font-size: 1rem;
-  line-height: 1.4;
-  position: relative;
-}
+    /* -------- EPISODES -------- */
+    .episodes {
+      padding: 50px 10%;
+      position: relative;
+      z-index: 30;
+    }
 
-.message.right .text { background: #0b1b0f; color:#39ff14; }
-.message.left .text { background: rgba(255,255,255,0.1); color:#f5ffe7; }
+    .episodes h2 {
+      font-family: 'Courier Prime', monospace;
+      font-size: 3rem;
+      letter-spacing: 4px;
+      text-transform: lowercase;
+      margin-bottom: 40px;
+      display: inline-block;
+      animation: typing 2s steps(15) 1;
+    }
 
-@keyframes appear {to{opacity:1; transform: translateY(0);} from{opacity:0; transform:translateY(10px);}}
+    .episode {
+      margin-bottom: 50px;
+      position: relative;
+    }
 
-</style>
+    .episode h3 {
+      font-family: 'Courier Prime', monospace;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      text-transform: lowercase;
+      display: inline-block;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .episode h3:hover::after {
+      content: "patience-- episode isn't out yet";
+      color: red;
+      position: absolute;
+      left: 120%;
+      top: 0;
+      white-space: nowrap;
+      font-size: 0.9rem;
+      opacity: 1;
+      transition: opacity 1s;
+    }
+
+    /* -------- CHAT -------- */
+    .chat {
+      padding: 50px 10%;
+      max-width: 900px;
+      margin: 0 auto;
+      position: relative;
+      z-index: 30;
+    }
+
+    .message {
+      display: flex;
+      margin-bottom: 20px;
+      opacity: 0;
+      transition: opacity 0.5s;
+      font-family: 'Courier Prime', monospace;
+    }
+
+    .message .text {
+      padding: 10px 15px;
+      border-radius: 5px;
+      max-width: 70%;
+      font-size: 1rem;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .message.user1 .text {
+      background: rgba(0,255,0,0.1);
+      color: #39ff14;
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .message.user2 .text {
+      background: rgba(255,255,255,0.05);
+      color: #f5ffe7;
+      margin-right: auto;
+      text-align: left;
+    }
+
+    /* -------- CURSOR TRAIL -------- */
+    .trail {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      pointer-events: none;
+      z-index: 50;
+    }
+
+    /* -------- CLICK FLOATY WORDS -------- */
+    .float-word {
+      position: absolute;
+      font-size: 0.8rem;
+      color: #f5ffe7;
+      opacity: 0.8;
+      pointer-events: none;
+      font-family: 'Courier Prime', monospace;
+      animation: floatUp 1.2s forwards;
+      z-index: 40;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(0) scale(1); opacity:1; }
+      100% { transform: translateY(-50px) scale(1.2); opacity:0; }
+    }
+
+    /* -------- TITLE ANIMATIONS -------- */
+    @keyframes titleGlitch {
+      0% { transform: translate(0px,0px) rotate(0deg);}
+      20% { transform: translate(-2px,1px) rotate(-1deg);}
+      40% { transform: translate(1px,-1px) rotate(1deg);}
+      60% { transform: translate(-1px,1px) rotate(0deg);}
+      80% { transform: translate(2px,-1px) rotate(-1deg);}
+      100% { transform: translate(0px,0px) rotate(0deg);}
+    }
+
+    @keyframes plusFlicker {
+      0%{opacity:1;}
+      50%{opacity:0.3;}
+      100%{opacity:1;}
+    }
+
+    @keyframes typing {
+      from { width: 0; }
+      to { width: 100%; }
+    }
+
+    /* -------- MOBILE -------- */
+    @media(max-width:768px){
+      .hero h1 { font-size: 3rem; }
+      .hero .subtitle { font-size:1rem; }
+      .episodes { padding:30px 5%; }
+      .chat { padding:30px 5%; }
+      .episode h3:hover::after { left: 50%; transform: translateX(0); }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="vhs-lines"></div>
-<div class="header">
-  <h1>folks <span class="plus">+</span> frequencies</h1>
-  <p>- based in philly -</p>
-</div>
+  <!-- TITLE -->
+  <section class="hero">
+    <h1>folks <span class="plus">+</span> frequencies</h1>
+    <p class="subtitle">- based in philly -</p>
+  </section>
 
-<div class="episode">volume 1 ep 1</div>
-<div class="episode">volume 1 ep 2</div>
-<div class="episode">volume 1 ep 3</div>
+  <!-- SCROLLING TEXT -->
+  <div class="scrolling-text"><span>folks + frequencies is a web series capturing fictitious, raw & real moments in philadelphia &nbsp;&nbsp;&nbsp;</span></div>
 
-<div class="chat-container" id="chat">
-  <!-- messages inserted via JS -->
-</div>
+  <!-- EPISODES -->
+  <section class="episodes">
+    <h2>volume 1</h2>
 
-<div class="cursor-trail" id="cursor"></div>
+    <div class="episode">
+      <h3>ep 1</h3>
+    </div>
 
-<script>
-// --- Cursor trail ---
-const cursor = document.getElementById('cursor');
-document.addEventListener('mousemove', e => {
-  cursor.style.left = e.clientX + 'px';
-  cursor.style.top = e.clientY + 'px';
-});
+    <div class="episode">
+      <h3>ep 2</h3>
+    </div>
 
-// --- Click floating words ---
-const words = ["hi", "XD", ":)", ":/", "how did u get here?"];
-document.addEventListener('click', e => {
-  const word = document.createElement('div');
-  word.className = 'click-word';
-  word.textContent = words[Math.floor(Math.random()*words.length)];
-  word.style.left = e.clientX + 'px';
-  word.style.top = e.clientY + 'px';
-  document.body.appendChild(word);
-  setTimeout(()=>word.remove(),1500);
-});
+    <div class="episode">
+      <h3>ep 3</h3>
+    </div>
+  </section>
 
-// --- Chat system ---
-const chatContainer = document.getElementById('chat');
-const convo = [
-  {side:"right", text:"why'd we end up in this timeline?"},
-  {side:"left", text:"you just did"},
-  {side:"right", text:"can i change the narrative to my story?"},
-  {side:"left", text:"you have power to do whatever you want. to fight for the world you want to live in."},
-  {side:"right", text:"sometimes i forget that i have power."},
-  {side:"left", text:"we all forget sometimes..."},
-  {side:"right", text:"do you think nihilism is weaker than optimism?"},
-  {side:"left", text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
-];
+  <!-- CHAT -->
+  <section class="chat" id="chat"></section>
 
-let index = 0;
+  <!-- CURSOR TRAIL -->
+  <div id="cursorTrail"></div>
 
-function typeMessage(msg, container, callback) {
-  container.textContent = '';
-  let i=0;
-  let interval = setInterval(()=>{
-    container.textContent += msg[i];
-    i++;
-    if(i>=msg.length){clearInterval(interval); callback();}
-  },50);
-}
+  <script>
+    /* -------- CURSOR TRAIL -------- */
+    const trailElements = [];
+    document.addEventListener('mousemove', e => {
+      const trail = document.createElement('div');
+      trail.className = 'trail';
+      trail.style.left = e.clientX + 'px';
+      trail.style.top = e.clientY + 'px';
+      document.body.appendChild(trail);
+      trailElements.push(trail);
+      setTimeout(()=>{trail.remove();},300);
+    });
 
-function showNext() {
-  if(index>=convo.length){ 
-    setTimeout(()=>{chatContainer.innerHTML=''; index=0; showNext();},1000);
-    return;
-  }
-  const m = convo[index];
-  const div = document.createElement('div');
-  div.className = 'message '+m.side;
-  const text = document.createElement('div');
-  text.className='text';
-  div.appendChild(text);
-  chatContainer.appendChild(div);
-  typeMessage(m.text, text, ()=>{
-    index++;
-    showNext();
-  });
-}
-showNext();
+    /* -------- CLICK FLOATING WORDS -------- */
+    const floatWords = ["hi","XD",":)",";/","how did u get here?"];
+    document.addEventListener('click', e=>{
+      const word = document.createElement('div');
+      word.className = 'float-word';
+      word.textContent = floatWords[Math.floor(Math.random()*floatWords.length)];
+      word.style.left = e.clientX + "px";
+      word.style.top = e.clientY + "px";
+      document.body.appendChild(word);
+      setTimeout(()=>{word.remove();},1200);
+    });
 
-</script>
+    /* -------- CHAT TYPING LOOP -------- */
+    const chat = document.getElementById('chat');
+    const messages = [
+      {sender:'user2', text:"why'd we end up in this timeline?"},
+      {sender:'user1', text:"you just did"},
+      {sender:'user2', text:"can i change the narrative to my story?"},
+      {sender:'user1', text:"you have power to do whatever you want. to fight for the world you want to live in."},
+      {sender:'user2', text:"sometimes i forget that i have power."},
+      {sender:'user1', text:"we all forget sometimes..."},
+      {sender:'user2', text:"do you think nihilism is weaker than optimism?"},
+      {sender:'user1', text:"optimists are often brave enough to challenge what's comfortable by envisioning a brighter future, which requires effort."}
+    ];
+
+    let msgIndex=0;
+
+    function typeMessage(msgObj, callback){
+      const div = document.createElement('div');
+      div.className = 'message ' + msgObj.sender;
+      const textSpan = document.createElement('span');
+      textSpan.className = 'text';
+      div.appendChild(textSpan);
+      chat.appendChild(div);
+
+      let i=0;
+      function type(){
+        if(i<msgObj.text.length){
+          textSpan.textContent += msgObj.text.charAt(i);
+          i++;
+          setTimeout(type, 60);
+        } else {
+          setTimeout(()=>backspace(), 800);
+        }
+      }
+      function backspace(){
+        if(i>0){
+          textSpan.textContent = textSpan.textContent.slice(0,-1);
+          i--;
+          setTimeout(backspace,50);
+        } else {
+          setTimeout(callback,300);
+        }
+      }
+      type();
+    }
+
+    function startChat(){
+      chat.innerHTML='';
+      msgIndex=0;
+      function nextMsg(){
+        if(msgIndex<messages.length){
+          typeMessage(messages[msgIndex], ()=>{msgIndex++; nextMsg();});
+        } else {
+          setTimeout(startChat,2000);
+        }
+      }
+      nextMsg();
+    }
+
+    startChat();
+  </script>
+
 </body>
 </html>
